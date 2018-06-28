@@ -1,5 +1,8 @@
 package symbolTable
 
+/**
+ *
+ */
 class HashTable : TokenFileHandler("hashtable"){
 
     /**
@@ -17,17 +20,17 @@ class HashTable : TokenFileHandler("hashtable"){
 
     /**
      * Gets the token row after the given key
-     * @param key: String
+     * @param tokenValue: String
      * @return Token
      */
-    fun get(key: String): Token?{
-        var hash = this.hash(key)
+    fun get(tokenValue: String): Token?{
+        var hash = this.hash(tokenValue)
         var token: Token? = null
         for (i in 0..super.registers){
             if (hash == super.readHash(i)){
-                if (key.equals(super.readKey(i)))    {
-                    token = this.readToken(i)
-                    break
+                val tokenTest = super.readToken(i);
+                if(tokenValue.equals(tokenTest?.token)){
+                    token = tokenTest
                 }else{
                     hash += 1000
                 }
@@ -35,4 +38,16 @@ class HashTable : TokenFileHandler("hashtable"){
         }
         return token;
     }
+
+    /**
+     *
+     */
+    fun push(token : Token) : Boolean{
+        return true
+    }
+}
+
+fun main(args: Array<String>) {
+    var hashtable = HashTable()
+    hashtable.hash("int")
 }

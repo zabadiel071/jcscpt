@@ -1,5 +1,6 @@
 package symbolTable
 
+import java.io.EOFException
 import java.io.RandomAccessFile
 
 /**
@@ -41,23 +42,43 @@ open class TokenFileHandler(val fileName: String) {
     }
 
 
+    /**
+     * @param i : Int Index of the row
+     * @return Token
+     */
     fun readHash(i: Int): Long{
-        //TODO: Implement
-        return 0
+        try{
+            file.seek(i*registerLength)
+            val hash = file.readLong()
+            file.seek(0)
+            return hash
+        }catch(e:EOFException){
+            return 0
+        }
     }
 
     /**
-     *
+     * @param i : Int Row index
+     * @return Token
      */
-    fun readToken(i: Int): Token{
-        //TODO: Implement
-        return Token(0,"")
-    }
+    fun readToken(i: Int): Token?{
+        try{
+            file.seek(i * registerLength)
 
+            val hashValue = file.readLong()
+            val token  = readString(Token.TOKEN_LENGTH)
+            val type = readString(Token.TYPE_LENGTH)
+            val length = file.readInt()
+            val position = file.readInt()
+            val value = readString(Token.VALUE_LENGTH)
+            val context = readString(Token.CONTEXT_LENGTH)
 
-    fun readKey(i: Int): String {
-        //TODO: Implement
-        return ""
+            file.seek(0)
+
+            return Token(hashValue, token, type, length, position, value, context)
+        }catch(e: EOFException){
+            return null
+        }
     }
 
     /**

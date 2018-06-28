@@ -23,7 +23,7 @@ class Token(
      * Values length to assign into file
      */
     companion object{
-        const val TOKEN_LENGTH = 32
+        const val TOKEN_LENGTH = 64
         const val TYPE_LENGTH = 32
         const val VALUE_LENGTH = 255
         const val CONTEXT_LENGTH = 255
