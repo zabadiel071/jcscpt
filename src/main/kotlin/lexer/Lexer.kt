@@ -4,6 +4,10 @@ import symbolTable.HashTable
 import java.io.File
 import java.util.*
 
+/**
+ * Lexical analysis phase
+ * It parses a file and get errors, also add this errors to symbol table
+ */
 class Lexer (val code: String?) {
     private val stack = Stack<String>()
     val hashtable = HashTable()
