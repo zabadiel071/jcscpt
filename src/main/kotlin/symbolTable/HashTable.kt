@@ -5,7 +5,7 @@ import java.util.*
 /**
  *
  */
-class HashTable : TokenFileHandler("hashtable"){
+class HashTable : TokenFileController("hashtable"){
 
     /**
      * Generates a hash code for a given string
@@ -76,6 +76,10 @@ class HashTable : TokenFileHandler("hashtable"){
         return validHash
     }
 
+    /**
+     * Gets the contents of the hash table
+     * @return ArrayList<Token>
+     */
     fun getHashTable() : ArrayList<Token>{
         var hashTable = ArrayList<Token>()
         for (i in 0..registers - 1){

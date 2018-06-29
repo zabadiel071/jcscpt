@@ -6,7 +6,7 @@ import java.io.RandomAccessFile
 /**
  *
  */
-open class TokenFileHandler(val fileName: String) {
+open class TokenFileController(val fileName: String) {
 
 
     val file = RandomAccessFile(fileName,"rw")
