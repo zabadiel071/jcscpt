@@ -1,5 +1,7 @@
 package symbolTable
 
+import java.util.*
+
 /**
  *
  */
@@ -26,7 +28,7 @@ class HashTable : TokenFileHandler("hashtable"){
     fun get(tokenValue: String): Token?{
         var hash = this.hash(tokenValue)
         var token: Token? = null
-        for (i in 0..super.registers){
+        for (i in 0..registers - 1){
             if (hash == super.readHash(i)){
                 val tokenTest = super.readToken(i);
                 if(tokenValue.equals(tokenTest?.token)){
@@ -40,14 +42,45 @@ class HashTable : TokenFileHandler("hashtable"){
     }
 
     /**
-     *
+      *  Insert a single token into symbol hash table
      */
     fun push(token : Token) : Boolean{
-        return true
+        val hash = this.hash(token.token)
+        val validHash = getValidHash(hash, token.token)
+        if (validHash != 0L){
+            token.hashValue = validHash
+            write(token)
+            return true
+        }else
+            return false
     }
-}
 
-fun main(args: Array<String>) {
-    var hashtable = HashTable()
-    hashtable.hash("int")
+    /**
+     * Gets a collision-free hash to insert a new Token
+     * @param s : String string to be hashed
+     */
+    private fun getValidHash(hash : Long, token : String) : Long{
+        var validHash = hash
+        var tokenTest: Token?
+        for (i in 0..registers){
+            if (validHash == super.readHash(i)){    //Collision
+                if (validHash.equals(super.readToken(i)?.token)){
+                    //Collision with same token (Omit)
+                    validHash = 0L
+                    break
+                }
+                else
+                    validHash += 1000
+            }
+        }
+        return validHash
+    }
+
+    fun getHashTable() : ArrayList<Token>{
+        var hashTable = ArrayList<Token>()
+        for (i in 0..registers - 1){
+            hashTable.add(readToken(i)!!)
+        }
+        return hashTable
+    }
 }

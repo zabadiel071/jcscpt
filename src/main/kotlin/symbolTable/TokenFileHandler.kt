@@ -77,6 +77,7 @@ open class TokenFileHandler(val fileName: String) {
 
             return Token(hashValue, token, type, length, position, value, context)
         }catch(e: EOFException){
+            e.printStackTrace()
             return null
         }
     }
