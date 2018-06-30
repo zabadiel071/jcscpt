@@ -46,34 +46,7 @@ class HashTable : TokenFileController("hashtable"){
      */
     fun push(token : Token) : Boolean{
         val hash = this.hash(token.token)
-        val validHash = getValidHash(hash, token.token)
-        if (validHash != 0L){
-            token.hashValue = validHash
-            write(token)
-            return true
-        }else
-            return false
-    }
-
-    /**
-     * Gets a collision-free hash to insert a new Token
-     * @param s : String string to be hashed
-     */
-    private fun getValidHash(hash : Long, token : String) : Long{
-        var validHash = hash
-        var tokenTest: Token?
-        for (i in 0..registers){
-            if (validHash == super.readHash(i)){    //Collision
-                if (validHash.equals(super.readToken(i)?.token)){
-                    //Collision with same token (Omit)
-                    validHash = 0L
-                    break
-                }
-                else
-                    validHash += 1000
-            }
-        }
-        return validHash
+        return write(hash,token)
     }
 
     /**

@@ -4,7 +4,6 @@ package symbolTable
  *
  */
 class Token(
-        var hashValue: Long = 0,
         var token: String,
         var type: String = "",
         var length: Int = 0,
@@ -14,7 +13,7 @@ class Token(
 {
 
     override fun toString(): String {
-        return "Token(hashValue='$hashValue', token='$token', type='$type', length=$length, position=$position, value='$value', context='$context')"
+        return "Token(token='$token', type='$type', length=$length, position=$position, value='$value', context='$context')"
     }
 
 
@@ -31,6 +30,6 @@ class Token(
         /**
          * Size that a token will occupy
          */
-        const val REGISTER_LENGTH = (8 + 2*TOKEN_LENGTH + 2*TYPE_LENGTH + 4 + 4 + 2*VALUE_LENGTH + 2*CONTEXT_LENGTH).toLong()
+        const val REGISTER_LENGTH = ( 2*TOKEN_LENGTH + 2*TYPE_LENGTH + 4 + 4 + 2*VALUE_LENGTH + 2*CONTEXT_LENGTH).toLong()
     }
 }

@@ -28,17 +28,23 @@ open class TokenFileController(val fileName: String) {
     /**
      * Insert Token row
      */
-    fun write(token: Token) {
-        file.seek(registers * registerLength)
-        file.writeLong(token.hashValue)
-        writeString(token.token, Token.TOKEN_LENGTH)
-        writeString(token.type, Token.TYPE_LENGTH)
-        file.writeInt(token.length)
-        file.writeInt(token.position)
-        writeString(token.value, Token.VALUE_LENGTH)
-        writeString(token.context, Token.CONTEXT_LENGTH)
-        file.seek(0)
-        registers ++
+    fun write(i:Long,token: Token) : Boolean {
+        file.seek(i * registerLength)
+        return try {
+            //file.writeLong(token.hashValue)
+            writeString(token.token, Token.TOKEN_LENGTH)
+            writeString(token.type, Token.TYPE_LENGTH)
+            file.writeInt(token.length)
+            file.writeInt(token.position)
+            writeString(token.value, Token.VALUE_LENGTH)
+            writeString(token.context, Token.CONTEXT_LENGTH)
+            file.seek(0)
+            registers ++
+            true
+        }catch (e:EOFException){
+            e.printStackTrace()
+            false
+        }
     }
 
 
@@ -75,7 +81,7 @@ open class TokenFileController(val fileName: String) {
 
             file.seek(0)
 
-            return Token(hashValue, token, type, length, position, value, context)
+            return Token(token, type, length, position, value, context)
         }catch(e: EOFException){
             e.printStackTrace()
             return null
