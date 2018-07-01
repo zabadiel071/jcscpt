@@ -16,8 +16,6 @@ class Token(
         return "Token(token='$token', type='$type', length=$length, position=$position, value='$value', context='$context')"
     }
 
-
-
     /**
      * Values length to assign into file
      */

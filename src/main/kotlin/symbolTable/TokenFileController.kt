@@ -4,16 +4,13 @@ import java.io.EOFException
 import java.io.RandomAccessFile
 
 /**
- *
+ *  Low level class to operate the random access file which storage the hashtable
  */
 open class TokenFileController(val fileName: String) {
 
-
-    val file = RandomAccessFile(fileName,"rw")
-    val registerLength: Long = Token.REGISTER_LENGTH
-
-    var registers: Int = 0
-
+    val file = RandomAccessFile(fileName,"rw")              //
+    val registerLength: Long = Token.REGISTER_LENGTH        // Length of each row
+    var registers: Long = file.length() / registerLength    // All registers, filled or not
 
     init {
         file.setLength(0)
@@ -21,12 +18,14 @@ open class TokenFileController(val fileName: String) {
     }
 
     fun finish(){
-        file.setLength(0)
         file.close()
     }
 
     /**
      * Insert Token row
+     * @param i : Long Index of the row to be inserted
+     * @param token : Token Token to be inserted
+     * @return Boolean if it was correctly written
      */
     fun write(i:Long,token: Token) : Boolean {
         file.seek(i * registerLength)
@@ -39,7 +38,6 @@ open class TokenFileController(val fileName: String) {
             writeString(token.value, Token.VALUE_LENGTH)
             writeString(token.context, Token.CONTEXT_LENGTH)
             file.seek(0)
-            registers ++
             true
         }catch (e:EOFException){
             e.printStackTrace()
@@ -47,31 +45,14 @@ open class TokenFileController(val fileName: String) {
         }
     }
 
-
     /**
-     * @param i : Int Index of the row
-     * @return Token
-     */
-    fun readHash(i: Int): Long{
-        try{
-            file.seek(i*registerLength)
-            val hash = file.readLong()
-            file.seek(0)
-            return hash
-        }catch(e:EOFException){
-            return 0
-        }
-    }
-
-    /**
+     * Gets token on desired index
      * @param i : Int Row index
      * @return Token
      */
-    fun readToken(i: Int): Token?{
+    fun readToken(i: Long): Token?{
         try{
             file.seek(i * registerLength)
-
-            val hashValue = file.readLong()
             val token  = readString(Token.TOKEN_LENGTH)
             val type = readString(Token.TYPE_LENGTH)
             val length = file.readInt()
@@ -83,7 +64,7 @@ open class TokenFileController(val fileName: String) {
 
             return Token(token, type, length, position, value, context)
         }catch(e: EOFException){
-            e.printStackTrace()
+            //e.printStackTrace()
             return null
         }
     }

@@ -22,10 +22,6 @@ apply plugin: 'kotlin'
 
 sourceCompatibility = 1.5
 
-jar {
-    baseName = 'gs-rest-service'
-    version = '0.1.0'
-}
 
 repositories {
     mavenCentral()
