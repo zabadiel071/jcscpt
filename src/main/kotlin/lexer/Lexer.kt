@@ -1,7 +1,6 @@
 package lexer
 
-import symbolTable.HashTable
-import java.io.File
+import lexer.symbolTable.HashTable
 import java.util.*
 
 /**

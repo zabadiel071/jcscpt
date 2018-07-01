@@ -1,10 +1,7 @@
 package app
 
-import lexer.Lexer
-import symbolTable.HashTable
-import symbolTable.Token
-import symbolTable.TokenFileController
-import java.io.File
+import lexer.symbolTable.HashTable
+import lexer.symbolTable.Token
 
 fun main(args: Array<String>) {
     val token = Token("int")
@@ -20,5 +17,4 @@ fun main(args: Array<String>) {
 
     print(hashtable.getHashTable())
 
-    hashtable.finish();
 }

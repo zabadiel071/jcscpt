@@ -1,11 +1,11 @@
-package symbolTable
+package lexer.symbolTable
 
 import java.util.*
 
 /**
  *  Represents a HashTable, is implemented on a random access file
  */
-class HashTable : TokenFileController("hashtable"){
+class HashTable : TokenFileController(){
 
     /**
      * Generates a hash code for a given string
@@ -44,7 +44,7 @@ class HashTable : TokenFileController("hashtable"){
      */
     private fun linearTestRead(start: Long, key: String): Token? {
         var token : Token? = null
-        for (i in start..registers){
+        for (i in start..registers()){
             token = readToken(i)
             if (token?.token.equals(key)){
                 break
@@ -53,28 +53,6 @@ class HashTable : TokenFileController("hashtable"){
             }
         }
         return token
-    }
-
-    /**
-     *  Inserts a token linearly when a collision appears
-     *  @param start : Long
-     *  @param token : Token
-     *  @return Boolean : If is inserted
-     */
-    private fun linearTestInsert(start: Long, token: Token): Boolean {
-        var tokenTest : Token?
-        var written = false
-        for (i in start..registers){
-            tokenTest = readToken(i)
-            if (tokenTest == null){
-                written = write(i, token)
-                break
-            }
-            if (tokenTest?.token.equals(token.token)){   //Token has been inserted before
-                break
-            }
-        }
-        return written
     }
 
     /**
@@ -97,6 +75,28 @@ class HashTable : TokenFileController("hashtable"){
     }
 
     /**
+     *  Inserts a token linearly when a collision appears
+     *  @param start : Long
+     *  @param token : Token
+     *  @return Boolean : If is inserted
+     */
+    private fun linearTestInsert(start: Long, token: Token): Boolean {
+        var tokenTest : Token?
+        var written = false
+        for (i in start..registers() + 1){
+            tokenTest = readToken(i)
+            if (tokenTest == null || tokenTest.token.equals("")){
+                written = write(i, token)
+                break
+            }
+            if (tokenTest?.token.equals(token.token)){   //Token has been inserted before
+                break
+            }
+        }
+        return written
+    }
+
+    /**
      * Gets the contents of the hash table
      * Reads linearly, searching for token rows
      * @return ArrayList<Token>
@@ -104,7 +104,7 @@ class HashTable : TokenFileController("hashtable"){
     fun getHashTable() : ArrayList<Token>?{
         var token :Token?
         val list = ArrayList<Token>()
-        for (i in 0..registers){
+        for (i in 0..registers()){
             token = readToken(i)
             if (token != null && !token.token.equals("")){
                 list.add(token)

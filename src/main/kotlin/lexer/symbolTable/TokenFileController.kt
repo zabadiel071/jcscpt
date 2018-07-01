@@ -1,4 +1,4 @@
-package symbolTable
+package lexer.symbolTable
 
 import java.io.EOFException
 import java.io.RandomAccessFile
@@ -6,19 +6,16 @@ import java.io.RandomAccessFile
 /**
  *  Low level class to operate the random access file which storage the hashtable
  */
-open class TokenFileController(val fileName: String) {
+open class TokenFileController( ) {
 
-    val file = RandomAccessFile(fileName,"rw")              //
+    val file = RandomAccessFile("ts.dat","rw")              //
     val registerLength: Long = Token.REGISTER_LENGTH        // Length of each row
-    var registers: Long = file.length() / registerLength    // All registers, filled or not
+    fun registers (): Long = file.length() / registerLength    // All registers, filled or not
+
 
     init {
         file.setLength(0)
         file.seek(0)
-    }
-
-    fun finish(){
-        file.close()
     }
 
     /**
@@ -37,6 +34,7 @@ open class TokenFileController(val fileName: String) {
             file.writeInt(token.position)
             writeString(token.value, Token.VALUE_LENGTH)
             writeString(token.context, Token.CONTEXT_LENGTH)
+            writeString(token.category, Token.CATEGORY_LENGTH)
             file.seek(0)
             true
         }catch (e:EOFException){
@@ -59,10 +57,10 @@ open class TokenFileController(val fileName: String) {
             val position = file.readInt()
             val value = readString(Token.VALUE_LENGTH)
             val context = readString(Token.CONTEXT_LENGTH)
-
+            val category = readString(Token.CATEGORY_LENGTH)
             file.seek(0)
 
-            return Token(token, type, length, position, value, context)
+            return Token(token, type, length, position, value, context, category)
         }catch(e: EOFException){
             //e.printStackTrace()
             return null

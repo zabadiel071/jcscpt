@@ -1,4 +1,4 @@
-package symbolTable
+package lexer.symbolTable
 
 /**
  *
@@ -9,11 +9,12 @@ class Token(
         var length: Int = 0,
         var position: Int = 0,
         var value: String = "",
-        var context: String = "")
+        var context: String = "",
+        var category: String = "")
 {
 
     override fun toString(): String {
-        return "Token(token='$token', type='$type', length=$length, position=$position, value='$value', context='$context')"
+        return "Token(token='$token', type='$type', length=$length, position=$position, value='$value', context='$context', category='$category')"
     }
 
     /**
@@ -24,10 +25,10 @@ class Token(
         const val TYPE_LENGTH = 32
         const val VALUE_LENGTH = 255
         const val CONTEXT_LENGTH = 255
-
+        const val CATEGORY_LENGTH = 255
         /**
          * Size that a token will occupy
          */
-        const val REGISTER_LENGTH = ( 2*TOKEN_LENGTH + 2*TYPE_LENGTH + 4 + 4 + 2*VALUE_LENGTH + 2*CONTEXT_LENGTH).toLong()
+        const val REGISTER_LENGTH = ( 2*TOKEN_LENGTH + 2*TYPE_LENGTH + 4 + 4 + 2*VALUE_LENGTH + 2*CONTEXT_LENGTH + 2*CATEGORY_LENGTH).toLong()
     }
 }
