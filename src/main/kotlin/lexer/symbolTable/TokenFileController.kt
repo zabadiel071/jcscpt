@@ -1,5 +1,6 @@
 package lexer.symbolTable
 
+import lexer.Definitions
 import java.io.EOFException
 import java.io.RandomAccessFile
 
@@ -89,7 +90,7 @@ open class TokenFileController( ) {
         var s = ""
         for (x in 0..size - 1){
             var char = file.readChar()
-            if (char.isLetterOrDigit()){
+            if (char.isLetterOrDigit() || Definitions.dictionary.contains("$char")){
                 s+=char
             }
         }

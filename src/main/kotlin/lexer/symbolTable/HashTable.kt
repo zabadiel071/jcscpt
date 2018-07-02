@@ -1,5 +1,7 @@
 package lexer.symbolTable
 
+import javafx.collections.ObservableList
+import tornadofx.observable
 import java.util.*
 
 /**
@@ -27,7 +29,7 @@ class HashTable : TokenFileController(){
      */
     fun get(key: String): Token?{
         val hash = hash(key)
-        var token = readToken(hash)
+        val token = readToken(hash)
         if (!key.equals(token?.token)){        // There is a row with that hash position, but value didn't match
             //Linear test
             return linearTestRead(hash, key)
@@ -101,7 +103,7 @@ class HashTable : TokenFileController(){
      * Reads linearly, searching for token rows
      * @return ArrayList<Token>
      */
-    fun getHashTable() : ArrayList<Token>?{
+    fun getHashTable() : ObservableList<Token>{
         var token :Token?
         val list = ArrayList<Token>()
         for (i in 0..registers()){
@@ -110,6 +112,40 @@ class HashTable : TokenFileController(){
                 list.add(token)
             }
         }
-        return list
+        return list.observable()
+    }
+
+    /**
+     * Changes the value assigned in "value" column, yes, as stupid as it sounds
+     * @param key : String
+     * @param value : String
+     */
+    fun updateValue(key: String, value: String) {
+        val hash = hash(key)
+        val token = readToken(hash)
+        if (!key.equals(token?.token)){
+            linearTestUpdateValue(hash,key,value)
+        }else{
+            token?.value = value
+            write(hash, token!!)
+        }
+    }
+
+    /**
+     * @param start : Long
+     * @param key : String
+     * @param value : String
+     */
+    private fun linearTestUpdateValue(start: Long, key: String, value: String) {
+        var tokenTest: Token?
+        var written  = false
+        for (i in start..registers()){
+            tokenTest = readToken(i)
+            if (tokenTest?.token.equals(key)){
+                tokenTest?.value = value
+                write(i,tokenTest!!)
+                break
+            }
+        }
     }
 }
