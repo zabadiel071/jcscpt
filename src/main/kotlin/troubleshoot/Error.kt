@@ -5,10 +5,11 @@ package troubleshoot
  */
 class Error(
         val code : Int,
-        val line : Int?= 0,
+        val row: Int?= 0,
+        val column : Int?=0,
         val token : String) {
     override fun toString(): String {
-        var s = "On line $line \t"
+        var s = "On ($row,$column) \t"
         when(code){
             ErrorCodes.INVALID_WORD -> s+= "Cannot use $token as recognizer"
             ErrorCodes.UNEXPECTED_SYMBOL -> s+= "Unexpected symbol on $token"
