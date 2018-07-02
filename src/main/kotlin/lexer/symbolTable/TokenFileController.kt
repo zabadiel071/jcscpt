@@ -32,9 +32,10 @@ open class TokenFileController( ) {
             writeString(token.token, Token.TOKEN_LENGTH)
             writeString(token.type, Token.TYPE_LENGTH)
             file.writeInt(token.length)
-            file.writeInt(token.position)
+            file.writeInt(token.row)
+            file.writeInt(token.column)
             writeString(token.value, Token.VALUE_LENGTH)
-            writeString(token.context, Token.CONTEXT_LENGTH)
+            file.writeInt(token.scope)
             writeString(token.category, Token.CATEGORY_LENGTH)
             file.seek(0)
             true
@@ -55,13 +56,14 @@ open class TokenFileController( ) {
             val token  = readString(Token.TOKEN_LENGTH)
             val type = readString(Token.TYPE_LENGTH)
             val length = file.readInt()
-            val position = file.readInt()
+            val row = file.readInt()
+            val column = file.readInt()
             val value = readString(Token.VALUE_LENGTH)
-            val context = readString(Token.CONTEXT_LENGTH)
+            val scope = file.readInt()
             val category = readString(Token.CATEGORY_LENGTH)
             file.seek(0)
 
-            return Token(token, type, length, position, value, context, category)
+            return Token(token, type, length, row,column, value, scope, category)
         }catch(e: EOFException){
             //e.printStackTrace()
             return null
@@ -69,7 +71,7 @@ open class TokenFileController( ) {
     }
 
     /**
-     * Writes a string with the desired length into file at current position
+     * Writes a string with the desired length into file at current row
      * @param s : String
      * @param length : Int
      */
