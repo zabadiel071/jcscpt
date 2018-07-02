@@ -6,7 +6,11 @@ class Definitions{
                 "int","double","float","string","return","function",
                 "if","else","return","for","while", "true", "false"
         )
-        val types = listOf<String>("int", "double", "boolean" , "string")
+        val types = listOf<String>("int", "double", "boolean" , "string", "float")
+
+        val operators = listOf<String>(
+                "=", "+", "-", "*","/", "%","==","!="
+        )
 
         val dictionary = listOf<String>(
                 "=", "+", "-", "*","/", "%",
@@ -20,5 +24,13 @@ class Definitions{
                 Pair("float",4),
                 Pair("string",0)
         )
+    }
+}
+
+class Categories{
+    companion object {
+        const val IDENTIFIER = "ID"
+        const val OPERATOR = "OP"
+        const val RESERVED_WORD = "RW"
     }
 }

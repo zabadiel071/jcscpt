@@ -3,11 +3,11 @@ package lexer
 import lexer.Definitions.Companion.dictionary
 import lexer.Definitions.Companion.reservedWords
 import lexer.Definitions.Companion.types
+import lexer.Definitions.Companion.operators
 import lexer.recognizers.Identifier
 import lexer.recognizers.Numeric
 import lexer.symbolTable.HashTable
 import lexer.symbolTable.Token
-import tornadofx.fiveDigits
 import tornadofx.observable
 import troubleshoot.Error
 import troubleshoot.ErrorCodes
@@ -24,7 +24,8 @@ class Lexer (val code: String) {
     private var pointer = -1
     private var auxToken = ""
 
-    var lineCounter = 0
+    var row = 0
+    var column = 0
 
     var errorList = ArrayList<Error>().observable()
 
@@ -41,8 +42,8 @@ class Lexer (val code: String) {
                 code[pointer].isDigit() ->  numericCheck()       //Check if is a numeric value
                 else -> when(code[pointer]){
                     '"' -> stringCheck()                        //Check if is an string value
-                    ' ','\t' -> read()                     //Just to verify tabs, line breaks and spaces
-                    '\n' -> { lineCounter++ ; read() }
+                    ' ','\t' -> read()                     //Just to verify tabs, row breaks and spaces
+                    '\n' -> { row++ ; read() }
                     '/' -> commentCheck()
                     else -> symbolCheck()                       //Check if is a valid symbol
                 }
@@ -61,7 +62,7 @@ class Lexer (val code: String) {
         else{
             if (isReserved(auxToken)){
                 stack.push(auxToken)
-                hashtable.push(Token(auxToken,category = "RW"))
+                hashtable.push(Token(auxToken,category = Categories.RESERVED_WORD))
             }else{
                 if(isValidIdentifier(auxToken)){
                     if (!stack.empty() && types.contains(stack.peek()))
@@ -73,7 +74,7 @@ class Lexer (val code: String) {
                     stack.push(auxToken)
                 }else{
                     //Generate errors
-                    generateError(ErrorCodes.INVALID_WORD, auxToken, lineCounter)
+                    generateError(ErrorCodes.INVALID_WORD, auxToken, row)
                 }
             }
             pointer --
@@ -95,7 +96,7 @@ class Lexer (val code: String) {
                     updateValue(stack.pop(), auxToken)
                 }
             }else
-                generateError(ErrorCodes.NUMBER_FORMAT_ERROR, auxToken, lineCounter)
+                generateError(ErrorCodes.NUMBER_FORMAT_ERROR, auxToken, row)
         }
         pointer--
         this.read()
@@ -116,9 +117,10 @@ class Lexer (val code: String) {
                     updateValue(stack.pop(), auxToken)
             }else{
                 //Generate error
-                generateError(ErrorCodes.INVALID_STRING,auxToken,lineCounter)
+                generateError(ErrorCodes.INVALID_STRING,auxToken, row)
             }
         }
+        pointer--
         this.read()
     }
 
@@ -136,10 +138,15 @@ class Lexer (val code: String) {
         if (checkCharacters(auxToken)){
             if (auxToken == "=")
                 stack.push("=")
-            else
+            else{
+                if (isOperator(auxToken))
+                    pushOperator(auxToken)
+                else
+                    generateError(ErrorCodes.UNEXPECTED_SYMBOL, auxToken, row)
                 stack.clear()
+            }
         }else{
-            generateError(ErrorCodes.UNEXPECTED_SYMBOL, auxToken, lineCounter)
+            generateError(ErrorCodes.UNEXPECTED_SYMBOL, auxToken, row)
         }
         this.read()
     }
@@ -153,6 +160,7 @@ class Lexer (val code: String) {
         if (code[pointer] == '/'){
             skipLine()
         }else{
+            auxToken = ""
             pointer --
             symbolCheck()
         }
@@ -161,19 +169,25 @@ class Lexer (val code: String) {
     private fun skipLine() {
         pointer++
         if(code[pointer] == '\n'){
-            lineCounter ++
+            row++
             read()
         }else{
             skipLine()
         }
     }
 
+    private fun pushOperator(token: String) {
+        if (token != ""){
+            this.hashtable.push(Token(token, row = row,category = Categories.OPERATOR))
+        }
+    }
+
     private fun pushID(token: String, type: String = "") {
         if (type != ""){
             val length = getTypeLength(type)
-            this.hashtable.push(Token(token,type,length = length, position = lineCounter,category = "id"))
+            this.hashtable.push(Token(token,type,length = length, row = row,category = Categories.IDENTIFIER))
         }else{
-            this.hashtable.push(Token(token,type,position = lineCounter,category = "id"))
+            this.hashtable.push(Token(token,type, row = row,category = Categories.IDENTIFIER))
         }
     }
 
@@ -193,6 +207,10 @@ class Lexer (val code: String) {
         return Numeric(auxToken).status
     }
 
+    private fun isOperator(token: String) :  Boolean {
+        return operators.contains(token)
+    }
+
     private fun isValidString(token: String): Boolean {
         return auxToken.all { c : Char ->
             c.isLetterOrDigit() || dictionary.contains("$c")
@@ -210,8 +228,8 @@ class Lexer (val code: String) {
     /**
      *
      */
-    private fun generateError(code: Int, token: String, line: Int) {
-        errorList.add(troubleshoot.Error(code,line,token))
+    private fun generateError(code: Int, token: String, row: Int, col: Int = 0) {
+        errorList.add(troubleshoot.Error(code, row,col,token=token))
     }
 
 }

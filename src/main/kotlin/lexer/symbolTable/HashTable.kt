@@ -30,7 +30,7 @@ class HashTable : TokenFileController(){
     fun get(key: String): Token?{
         val hash = hash(key)
         val token = readToken(hash)
-        if (!key.equals(token?.token)){        // There is a row with that hash position, but value didn't match
+        if (!key.equals(token?.token)){        // There is a row with that hash row, but value didn't match
             //Linear test
             return linearTestRead(hash, key)
         }
