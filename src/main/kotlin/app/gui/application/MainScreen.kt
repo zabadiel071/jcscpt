@@ -1,4 +1,4 @@
-package application
+package app.gui.application
 
 import javafx.collections.ObservableList
 import javafx.scene.control.SelectionMode
@@ -66,9 +66,10 @@ class MainScreen : View() {
                     column("Token",Token::token)
                     column("Type",Token::type)
                     column("Length", Token::length)
-                    column("Position", Token::position)
+                    column("Row", Token::row)
+                    column("Column", Token::column)
                     column("Value", Token::value)
-                    column("Context", Token::context)
+                    column("Scope", Token::scope)
                     column("Category",Token::category)
                 }
                 //add(ts)

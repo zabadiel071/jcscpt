@@ -1,4 +1,4 @@
-package application
+package app.gui.application
 
 import javafx.scene.paint.Color
 import tornadofx.*

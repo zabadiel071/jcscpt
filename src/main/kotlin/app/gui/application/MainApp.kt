@@ -1,4 +1,4 @@
-package application
+package app.gui.application
 
 import tornadofx.App
 import tornadofx.importStylesheet
