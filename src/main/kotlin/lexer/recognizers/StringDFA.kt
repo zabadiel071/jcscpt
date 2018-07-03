@@ -2,7 +2,7 @@ package lexer.recognizers
 
 import lexer.Definitions.Companion.dictionary
 
-class Strings(word:String) : DFA(word){
+class StringDFA(word:String) : DFA(word){
 
     override fun q0() {
         forward()

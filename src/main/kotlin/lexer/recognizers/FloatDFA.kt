@@ -3,7 +3,7 @@ package lexer.recognizers
 /**
  *
  */
-class Numeric (word:String) : DFA(word){
+class FloatDFA(word:String) : DFA(word){
     override fun q0() {
         forward()
         try {
@@ -27,7 +27,7 @@ class Numeric (word:String) : DFA(word){
                     else -> qError()
                 }
             }
-        }catch (e:StringIndexOutOfBoundsException){this.status = true}
+        }catch (e:StringIndexOutOfBoundsException){}
     }
 
     /**
@@ -40,7 +40,7 @@ class Numeric (word:String) : DFA(word){
                 true -> q3()
                 false -> qError()
             }
-        }catch (e: StringIndexOutOfBoundsException){}
+        }catch (e: StringIndexOutOfBoundsException){this.status = true}
     }
 
     /**
@@ -60,7 +60,7 @@ class Numeric (word:String) : DFA(word){
      *
      */
     override fun qError() {
-        position++
+        forward()
         try {
             read()
             qError()

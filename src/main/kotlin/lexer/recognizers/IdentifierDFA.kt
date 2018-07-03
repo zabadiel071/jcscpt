@@ -3,7 +3,7 @@ package lexer.recognizers
 /**
  * Recognizer for identifiers
  */
-class Identifier (word:String) : DFA(word){
+class IdentifierDFA(word:String) : DFA(word){
     override fun q0() {
         forward()
         try {
