@@ -162,10 +162,13 @@ class Lexer (val code: String) {
         auxToken += code[pointer]
         pointer++
         //Operators like ==, !=
-        if (code[pointer]== '='){
-            auxToken += code[pointer]
-            pointer ++
-        }else pointer --
+        if (pointer < code.length){
+            if (code[pointer]== '='){
+                auxToken += code[pointer]
+                pointer ++
+            }else pointer --
+        }
+
         if (checkCharacters(auxToken)){
             if (auxToken == "=")
                 stack.push("=")

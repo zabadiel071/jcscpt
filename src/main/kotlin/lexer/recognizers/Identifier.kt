@@ -21,7 +21,7 @@ class Identifier (word:String) : DFA(word){
                 true -> q1()
                 false -> {
                     when(read()){
-                        '_','$' -> q1()
+                        '_' -> q1()
                         else -> qError()
                     }
                 }
