@@ -59,6 +59,7 @@ open class TokenFileController( ) {
             val row = file.readInt()
             val column = file.readInt()
             val value = readString(Token.VALUE_LENGTH)
+            //val scope = readString(Token.SCOPE_LENGTH)
             val scope = file.readInt()
             val category = readString(Token.CATEGORY_LENGTH)
             file.seek(0)

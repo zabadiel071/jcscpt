@@ -18,6 +18,14 @@ class Definitions{
                 ":", ",", ".","\\"," ", "\"", "\n", "\t" , "'", "`" , "#"
         )
 
+        val scopeInitToken = listOf<String>(
+                "{"
+        )
+
+        val scopeFinalToken = listOf<String>(
+                "}"
+        )
+
         val lengths = hashMapOf<String,Int>(
                 Pair("int",4),
                 Pair("double",8),

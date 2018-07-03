@@ -26,6 +26,7 @@ class Token(
         const val TYPE_LENGTH = 32
         const val VALUE_LENGTH = 255
         const val CATEGORY_LENGTH = 255
+        //const val SCOPE_LENGTH = TOKEN_LENGTH
         /**
          * Size that a token will occupy
          */
@@ -36,7 +37,7 @@ class Token(
                     4 +                 // Row
                     4 +                 // Column
                     2*VALUE_LENGTH +
-                    4 +                 // Scope
+                    4 +
                     2*CATEGORY_LENGTH
                 ).toLong()
     }

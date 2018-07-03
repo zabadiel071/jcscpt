@@ -4,6 +4,8 @@ import lexer.Definitions.Companion.dictionary
 import lexer.Definitions.Companion.reservedWords
 import lexer.Definitions.Companion.types
 import lexer.Definitions.Companion.operators
+import lexer.Definitions.Companion.scopeFinalToken
+import lexer.Definitions.Companion.scopeInitToken
 import lexer.recognizers.Identifier
 import lexer.recognizers.Numeric
 import lexer.recognizers.Strings
@@ -28,6 +30,7 @@ class Lexer (val code: String) {
 
     var row = 0
     var column = 0
+    var scope = 0
 
     var errorList = ArrayList<Error>().observable()
 
@@ -214,9 +217,9 @@ class Lexer (val code: String) {
     private fun pushID(token: String, type: String = "") {
         if (type != ""){
             val length = getTypeLength(type)
-            this.hashtable.push(Token(token,type,length = length, row = row,column = column,category = Categories.IDENTIFIER))
+            this.hashtable.push(Token(token,type,length = length, row = row,column = column,scope = scope,category = Categories.IDENTIFIER))
         }else{
-            this.hashtable.push(Token(token,type, row = row,column = column,category = Categories.IDENTIFIER))
+            this.hashtable.push(Token(token,type, row = row,column = column,scope = scope,category = Categories.IDENTIFIER))
         }
     }
 
@@ -234,7 +237,13 @@ class Lexer (val code: String) {
      */
     private fun pushSymbol(token: String) {
         if (token != ""){
-            this.hashtable.push(Token(token,"", 0,row, column,"",0, Categories.SYMBOL ))
+            this.hashtable.push(Token(token,"", 0,row, column,"",category = Categories.SYMBOL ))
+        }
+        if (isScopeInit(token)){
+            scope++
+        }
+        if (isScopeFinal(token)){
+            scope--
         }
     }
 
@@ -260,6 +269,14 @@ class Lexer (val code: String) {
 
     private fun isValidString(token: String): Boolean {
         return Strings(token).status
+    }
+
+    private fun isScopeFinal(token: String): Boolean {
+        return scopeFinalToken.contains(token)
+    }
+
+    private fun isScopeInit(token: String): Boolean {
+        return scopeInitToken.contains(token)
     }
 
     private fun checkCharacters(chars: String): Boolean {
