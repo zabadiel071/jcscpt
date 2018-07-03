@@ -5,6 +5,6 @@ import lexer.symbolTable.HashTable
 import lexer.symbolTable.Token
 
 fun main(args: Array<String>) {
-    val s = "\"Hello World\"\'"
+    val s = "\"\\\"\""
     print(Strings(s).status)
 }

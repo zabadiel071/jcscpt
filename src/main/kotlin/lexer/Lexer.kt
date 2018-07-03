@@ -133,6 +133,10 @@ class Lexer (val code: String) {
             auxToken += code[pointer]
             if (code[pointer] == '\n')
                 row++
+            if (code[pointer] == '\\'){
+                pointer ++
+                auxToken += code[pointer]
+            }
             stringCheck()
         }else{
             if (pointer >= code.length){

@@ -20,6 +20,7 @@ class Strings(word:String) : DFA(word){
             val read = read()
             when{
                 read.isLetterOrDigit() -> q1()
+                read() == '\\' -> q3()
                 read() == '"' -> q2()
                 dictionary.contains("$read")->q1()
                 else->qError()
@@ -38,6 +39,13 @@ class Strings(word:String) : DFA(word){
                 else->qError()
             }
         }catch (e:StringIndexOutOfBoundsException){status = true}
+    }
+
+    private fun q3() {
+        try{
+            val read = read()
+            q2()
+        }catch(e:StringIndexOutOfBoundsException){}
     }
 
     override fun qError() {
