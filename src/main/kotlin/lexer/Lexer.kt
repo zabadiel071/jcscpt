@@ -18,6 +18,7 @@ import java.util.*
  * It parses a file and get errors, also add this errors to symbol table
  */
 class Lexer (val code: String) {
+
     private val stack = Stack<String>()
     val hashtable = HashTable()
 
@@ -25,6 +26,10 @@ class Lexer (val code: String) {
     private var auxToken = ""
 
     var row = 0
+
+    /**
+     * TODO: Calculate column dynamically or with a counter
+     */
     var column = 0
 
     var errorList = ArrayList<Error>().observable()
@@ -42,8 +47,8 @@ class Lexer (val code: String) {
                 code[pointer].isDigit() ->  numericCheck()       //Check if is a numeric value
                 else -> when(code[pointer]){
                     '"' -> stringCheck()                        //Check if is an string value
-                    ' ','\t' -> read()                     //Just to verify tabs, row breaks and spaces
-                    '\n' -> { row++ ; read() }
+                    ' ','\t' -> { column++; read()}                     //Just to verify tabs, row breaks and spaces
+                    '\n' -> { row++ ; column = 0; read() }
                     '/' -> commentCheck()
                     else -> symbolCheck()                       //Check if is a valid symbol
                 }

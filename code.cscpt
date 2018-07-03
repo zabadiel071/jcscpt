@@ -1,20 +1,7 @@
-//Declaracion de variables
-int x = 4
-int y = 2
-string s = "Hello World"
-double z = 3.1416
-x = 3
+x = "a a a"b
 
-int suma(int,int)
-double factorial(double,double)
+//
+/int \y = 4;
+// String res = x - y
 
-function suma (a, b){
-	return b + a
-}
-
-function factorial(val){
-	if ( val == 1)
-		return 1
-	else
-		return val*factorial(val - 1)
-}
+	//	a
