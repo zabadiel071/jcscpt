@@ -15,7 +15,7 @@ class Definitions{
         val dictionary = listOf<String>(
                 "=", "+", "-", "*","/", "%",
                 "==","!=", "(", ")", "{", "}",
-                ":", ",", ".","\\"," "
+                ":", ",", ".","\\"," ", "\"", "\n", "\t" , "'", "`" , "#"
         )
 
         val lengths = hashMapOf<String,Int>(
@@ -32,5 +32,6 @@ class Categories{
         const val IDENTIFIER = "ID"
         const val OPERATOR = "OP"
         const val RESERVED_WORD = "RW"
+        const val SYMBOL = "SY"
     }
 }

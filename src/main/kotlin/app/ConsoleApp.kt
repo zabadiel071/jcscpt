@@ -1,17 +1,10 @@
 package app
 
+import lexer.recognizers.Strings
 import lexer.symbolTable.HashTable
 import lexer.symbolTable.Token
 
 fun main(args: Array<String>) {
-    val token = Token("int", value = "40")
-
-    val hashtable = HashTable()
-
-    hashtable.push(token)
-
-    hashtable.updateValue("int", "75")
-
-    print(hashtable.getHashTable())
-
+    val s = "\"Hello World\"\'"
+    print(Strings(s).status)
 }

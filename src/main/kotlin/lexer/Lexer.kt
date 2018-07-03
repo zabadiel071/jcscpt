@@ -6,6 +6,7 @@ import lexer.Definitions.Companion.types
 import lexer.Definitions.Companion.operators
 import lexer.recognizers.Identifier
 import lexer.recognizers.Numeric
+import lexer.recognizers.Strings
 import lexer.symbolTable.HashTable
 import lexer.symbolTable.Token
 import tornadofx.observable
@@ -26,10 +27,6 @@ class Lexer (val code: String) {
     private var auxToken = ""
 
     var row = 0
-
-    /**
-     * TODO: Calculate column dynamically or with a counter
-     */
     var column = 0
 
     var errorList = ArrayList<Error>().observable()
@@ -46,18 +43,33 @@ class Lexer (val code: String) {
                 code[pointer].isLetter() -> wordCheck()         //Check if is an identifier, reserved word, or valid word expression
                 code[pointer].isDigit() ->  numericCheck()       //Check if is a numeric value
                 else -> when(code[pointer]){
-                    '"' -> stringCheck()                        //Check if is an string value
-                    ' ','\t' -> { column++; read()}                     //Just to verify tabs, row breaks and spaces
-                    '\n' -> { row++ ; column = 0; read() }
-                    '/' -> commentCheck()
-                    else -> symbolCheck()                       //Check if is a valid symbol
+                    '"' ->  {
+                        auxToken += code[pointer]
+                        stringCheck()
+                    }                        //Check if is an string value
+                    ' ','\t' -> {
+                        column++; read()
+                    }                     //Just to verify tabs, row breaks and spaces
+                    '\n' -> {
+                        row++
+                        column = 0
+                        read()
+                    }
+                    '/' -> {
+                        commentCheck()
+                    }
+                    else ->{
+                        symbolCheck()                       //Check if is a valid symbol
+                    }
                 }
             }
-        }catch (e:IndexOutOfBoundsException){}
+        }catch (e:IndexOutOfBoundsException){
+        }
     }
 
     /**
      * Reserved words and identifiers
+     * Word is saved with column which started
      */
     private fun wordCheck() {
         auxToken += code[pointer]
@@ -82,6 +94,7 @@ class Lexer (val code: String) {
                     generateError(ErrorCodes.INVALID_WORD, auxToken, row)
                 }
             }
+            column += auxToken.length
             pointer --
             this.read()
         }
@@ -103,6 +116,7 @@ class Lexer (val code: String) {
             }else
                 generateError(ErrorCodes.NUMBER_FORMAT_ERROR, auxToken, row)
         }
+        column += auxToken.length
         pointer--
         this.read()
     }
@@ -114,17 +128,26 @@ class Lexer (val code: String) {
         pointer++
         if (pointer < code.length && code[pointer] != '"'){
             auxToken += code[pointer]
+            if (code[pointer] == '\n')
+                row++
             stringCheck()
         }else{
-            pointer++
-            if (isValidString(auxToken)){
-                if (!stack.empty() && stack.pop() == "=")
-                    updateValue(stack.pop(), auxToken)
-            }else{
-                //Generate error
+            if (pointer >= code.length){
                 generateError(ErrorCodes.INVALID_STRING,auxToken, row)
+            }else{
+                if (code[pointer] == '"')
+                    auxToken += code[pointer]
+                pointer++
+                if (isValidString(auxToken)){
+                    if (!stack.empty() && stack.pop() == "=")
+                        updateValue(stack.pop(), auxToken)
+                }else{
+                    //Generate error
+                    generateError(ErrorCodes.INVALID_STRING,auxToken, row)
+                }
             }
         }
+        column += auxToken.length
         pointer--
         this.read()
     }
@@ -147,12 +170,13 @@ class Lexer (val code: String) {
                 if (isOperator(auxToken))
                     pushOperator(auxToken)
                 else
-                    generateError(ErrorCodes.UNEXPECTED_SYMBOL, auxToken, row)
+                    pushSymbol(auxToken)
                 stack.clear()
             }
         }else{
-            generateError(ErrorCodes.UNEXPECTED_SYMBOL, auxToken, row)
+            generateError(ErrorCodes.UNKNOWN_SYMBOL, auxToken, row)
         }
+        column += auxToken.length
         this.read()
     }
 
@@ -171,6 +195,9 @@ class Lexer (val code: String) {
         }
     }
 
+    /**
+     *
+     */
     private fun skipLine() {
         pointer++
         if(code[pointer] == '\n'){
@@ -181,18 +208,33 @@ class Lexer (val code: String) {
         }
     }
 
+    /**
+     *
+     */
+    private fun pushID(token: String, type: String = "") {
+        if (type != ""){
+            val length = getTypeLength(type)
+            this.hashtable.push(Token(token,type,length = length, row = row,column = column,category = Categories.IDENTIFIER))
+        }else{
+            this.hashtable.push(Token(token,type, row = row,column = column,category = Categories.IDENTIFIER))
+        }
+    }
+
+    /**
+     *
+     */
     private fun pushOperator(token: String) {
         if (token != ""){
             this.hashtable.push(Token(token, row = row,category = Categories.OPERATOR))
         }
     }
 
-    private fun pushID(token: String, type: String = "") {
-        if (type != ""){
-            val length = getTypeLength(type)
-            this.hashtable.push(Token(token,type,length = length, row = row,category = Categories.IDENTIFIER))
-        }else{
-            this.hashtable.push(Token(token,type, row = row,category = Categories.IDENTIFIER))
+    /**
+     *
+     */
+    private fun pushSymbol(token: String) {
+        if (token != ""){
+            this.hashtable.push(Token(token,"", 0,row, column,"",0, Categories.SYMBOL ))
         }
     }
 
@@ -217,9 +259,7 @@ class Lexer (val code: String) {
     }
 
     private fun isValidString(token: String): Boolean {
-        return auxToken.all { c : Char ->
-            c.isLetterOrDigit() || dictionary.contains("$c")
-        }
+        return Strings(token).status
     }
 
     private fun checkCharacters(chars: String): Boolean {

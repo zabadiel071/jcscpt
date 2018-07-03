@@ -59,7 +59,6 @@ class MainScreen : View() {
 
         right{
             vbox{
-                text("Tabla de simbolos")
                 minWidth = 600.0
 
                 tableview(tokenlist){
