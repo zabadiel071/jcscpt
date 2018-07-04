@@ -195,6 +195,7 @@ class Lexer (val code: String) {
         when (checkCharacters(auxToken)){
             true ->when{
                         isOperator(auxToken) -> pushOperator(auxToken)
+                        isDelimiter(auxToken[0]) -> pushDelimiter(auxToken[0])
                         else -> pushSymbol(auxToken)
                     }
             false -> generateError(ErrorCodes.UNKNOWN_SYMBOL, auxToken, row)
@@ -250,6 +251,10 @@ class Lexer (val code: String) {
         if (token != ""){
             this.hashTable.push(Token(token, row = row,category = Categories.OPERATOR))
         }
+    }
+
+    private fun pushDelimiter(c: Char) {
+        this.hashTable.push(Token("$c",row = row,column = column,scope = scope,category = Categories.DELIMITER))
     }
 
     /**

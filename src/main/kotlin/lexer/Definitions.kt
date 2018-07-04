@@ -5,7 +5,7 @@ class Definitions{
 
         val reservedWords = listOf<String>(
                 "int","float","string","return","function",
-                "if","else","return","for","while", "true", "false"
+                "if","else","return","for","while", "true", "false", "const"
         )
 
         val types = listOf<String>("int","float", "boolean" , "string")
