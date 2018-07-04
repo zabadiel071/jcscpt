@@ -1,10 +1,8 @@
 package app
 
-import lexer.recognizers.Strings
-import lexer.symbolTable.HashTable
-import lexer.symbolTable.Token
+import lexer.recognizers.StringDFA
 
 fun main(args: Array<String>) {
     val s = "\"\\\"\""
-    print(Strings(s).status)
+    print(StringDFA(s).status)
 }

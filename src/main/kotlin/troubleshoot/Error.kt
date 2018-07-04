@@ -11,7 +11,7 @@ class Error(
     override fun toString(): String {
         var s = "On ($row,$column) \t"
         when(code){
-            ErrorCodes.INVALID_WORD -> s+= "Cannot use $token as recognizer"
+            ErrorCodes.INVALID_WORD -> s+= "Cannot use $token as identifier"
             ErrorCodes.UNKNOWN_SYMBOL -> s+= "Unknown symbol on $token"
             ErrorCodes.INVALID_STRING -> s+= "String error $token"
             ErrorCodes.NUMBER_FORMAT_ERROR -> s += "Number format is not valid [$token]"

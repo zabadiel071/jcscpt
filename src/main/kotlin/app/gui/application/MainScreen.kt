@@ -39,7 +39,7 @@ class MainScreen : View() {
                         tokenlist.clear()
                         errorList.items.clear()
                         runAsync {
-                            lexer!!.hashtable.getHashTable()
+                            lexer!!.hashTable.getHashTable()
                         } ui { observableList: ObservableList<Token> ->
                             observableList.forEach { t: Token? -> tokenlist.add(t!!) }
                             if (lexer!!.errorList.isNotEmpty()){

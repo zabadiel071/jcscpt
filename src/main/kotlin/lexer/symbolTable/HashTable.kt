@@ -19,7 +19,7 @@ class HashTable : TokenFileController(){
         key.forEach { char ->
             x *= char.toInt()
         }
-        return x % 997
+        return Math.abs(x % 997)
     }
 
     /**

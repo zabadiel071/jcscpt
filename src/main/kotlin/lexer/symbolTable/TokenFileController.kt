@@ -5,7 +5,7 @@ import java.io.EOFException
 import java.io.RandomAccessFile
 
 /**
- *  Low level class to operate the random access file which storage the hashtable
+ *  Low level class to operate the random access file which storage the hashTable
  */
 open class TokenFileController( ) {
 

@@ -2,20 +2,26 @@ package lexer
 
 class Definitions{
     companion object {
+
         val reservedWords = listOf<String>(
-                "int","double","float","string","return","function",
+                "int","float","string","return","function",
                 "if","else","return","for","while", "true", "false"
         )
-        val types = listOf<String>("int", "double", "boolean" , "string", "float")
+
+        val types = listOf<String>("int","float", "boolean" , "string")
 
         val operators = listOf<String>(
-                "=", "+", "-", "*","/", "%","==","!="
+                "=", "+", "-", "*","/", "%","==","!=","!"
         )
 
         val dictionary = listOf<String>(
-                "=", "+", "-", "*","/", "%",
+                "!","¡","=", "+", "-", "*","/", "%","_",
                 "==","!=", "(", ")", "{", "}","[","]",
                 ":", ",", ".","\\"," ", "\"", "\n", "\t" , "'", "`" , "#"
+        )
+
+        val delimiters= listOf<Char>(
+                ' ',',','\n','\t',';', '(', ')', '{', '}','!'
         )
 
         val scopeInitToken = listOf<String>(
@@ -41,5 +47,17 @@ class Categories{
         const val OPERATOR = "OP"
         const val RESERVED_WORD = "RW"
         const val SYMBOL = "SY"
+        const val NUMERIC = "NU"
+        const val STRING = "ST"
+        const val DELIMITER = "DEL"
+    }
+}
+
+class Types{
+    companion object {
+        const val INTEGER = "int"
+        const val FLOAT = "float"
+        const val BOOLEAN = "bool"
+        const val STRING = "string"
     }
 }

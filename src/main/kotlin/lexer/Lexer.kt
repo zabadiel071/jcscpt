@@ -1,14 +1,17 @@
 package lexer
 
+import lexer.Definitions.Companion.delimiters
 import lexer.Definitions.Companion.dictionary
+import lexer.Definitions.Companion.lengths
 import lexer.Definitions.Companion.reservedWords
 import lexer.Definitions.Companion.types
 import lexer.Definitions.Companion.operators
 import lexer.Definitions.Companion.scopeFinalToken
 import lexer.Definitions.Companion.scopeInitToken
-import lexer.recognizers.Identifier
-import lexer.recognizers.Numeric
-import lexer.recognizers.Strings
+import lexer.recognizers.IdentifierDFA
+import lexer.recognizers.FloatDFA
+import lexer.recognizers.IntegerDFA
+import lexer.recognizers.StringDFA
 import lexer.symbolTable.HashTable
 import lexer.symbolTable.Token
 import tornadofx.observable
@@ -22,8 +25,8 @@ import java.util.*
  */
 class Lexer (val code: String) {
 
-    private val stack = Stack<String>()
-    val hashtable = HashTable()
+    private val typeStack = Stack<String>()
+    val hashTable = HashTable()
 
     private var pointer = -1
     private var auxToken = ""
@@ -77,21 +80,24 @@ class Lexer (val code: String) {
     private fun wordCheck() {
         auxToken += code[pointer]
         pointer ++
-        if (pointer < code.length && code[pointer].isLetterOrDigit())
+        if ( pointer < code.length
+                && ( code[pointer].isLetterOrDigit() || !isDelimiter(code[pointer]))
+                && !isOperator("${code[pointer]}")
+                )
             wordCheck()
         else{
             if (isReserved(auxToken)){
-                stack.push(auxToken)
-                hashtable.push(Token(auxToken,category = Categories.RESERVED_WORD))
+                typeStack.push(auxToken)
+                hashTable.push(Token(auxToken,category = Categories.RESERVED_WORD))
             }else{
                 if(isValidIdentifier(auxToken)){
-                    if (!stack.empty() && types.contains(stack.peek()))
-                        pushID(auxToken,stack.pop())
+                    if (!typeStack.empty() && types.contains(typeStack.peek()))
+                        pushID(auxToken, typeStack.pop())
                     else{
-                        stack.clear()
+                        typeStack.clear()
                         pushID(auxToken)
                     }
-                    stack.push(auxToken)
+                    typeStack.push(auxToken)
                 }else{
                     //Generate errors
                     generateError(ErrorCodes.INVALID_WORD, auxToken, row)
@@ -112,12 +118,21 @@ class Lexer (val code: String) {
         if (pointer < code.length && (code[pointer].isLetterOrDigit() || code[pointer] == '.'))
             numericCheck()
         else{
-            if (isNumeric(auxToken)){
-                if (!stack.empty() && stack.pop() == "="){
-                    updateValue(stack.pop(), auxToken)
+            when{
+                isFloat(auxToken) -> {
+                    hashTable.push(
+                            Token(auxToken, Types.FLOAT, lengths.get(Types.FLOAT)!!,row, column,"",scope,category = Categories.NUMERIC)
+                    )
                 }
-            }else
-                generateError(ErrorCodes.NUMBER_FORMAT_ERROR, auxToken, row)
+                isInteger(auxToken) -> {
+                    hashTable.push(
+                            Token(auxToken, Types.INTEGER, lengths.get(Types.INTEGER)!!,row, column,"",scope,category = Categories.NUMERIC)
+                    )
+                }
+                else -> {
+                    generateError(ErrorCodes.NUMBER_FORMAT_ERROR, auxToken, row)
+                }
+            }
         }
         column += auxToken.length
         pointer--
@@ -131,32 +146,34 @@ class Lexer (val code: String) {
         pointer++
         if (pointer < code.length && code[pointer] != '"'){
             auxToken += code[pointer]
-            if (code[pointer] == '\n')
-                row++
-            if (code[pointer] == '\\'){
-                pointer ++
-                auxToken += code[pointer]
+            when{
+                code[pointer] == '\n' -> row++
+                code[pointer] == '\\' -> {
+                    pointer ++
+                    auxToken += code[pointer]
+                }
             }
             stringCheck()
         }else{
-            if (pointer >= code.length){
-                generateError(ErrorCodes.INVALID_STRING,auxToken, row)
-            }else{
-                if (code[pointer] == '"')
+            when {
+                pointer >= code.length -> generateError(ErrorCodes.INVALID_STRING, auxToken, row)
+                code[pointer] == '"' -> {
                     auxToken += code[pointer]
-                pointer++
-                if (isValidString(auxToken)){
-                    if (!stack.empty() && stack.pop() == "=")
-                        updateValue(stack.pop(), auxToken)
-                }else{
-                    //Generate error
-                    generateError(ErrorCodes.INVALID_STRING,auxToken, row)
                 }
             }
+            pointer++
+            when (isValidString(auxToken)){
+                true->{
+                    hashTable.push(
+                            Token(auxToken, Types.STRING, lengths[Types.STRING]!!,row,column,scope = scope,category = Categories.STRING)
+                    )
+                }
+                else -> generateError(ErrorCodes.INVALID_STRING,auxToken, row)
+            }
+            column += auxToken.length
+            pointer--
+            this.read()
         }
-        column += auxToken.length
-        pointer--
-        this.read()
     }
 
     /**
@@ -164,27 +181,23 @@ class Lexer (val code: String) {
      */
     private fun symbolCheck() {
         auxToken += code[pointer]
-        pointer++
         //Operators like ==, !=
-        if (pointer < code.length){
-            if (code[pointer]== '='){
-                auxToken += code[pointer]
-                pointer ++
-            }else pointer --
+        if (pointer < code.length && (auxToken=="=" || auxToken=="!")){
+            val x = code[pointer + 1]
+            when (x){
+                '=' -> {
+                    pointer++;
+                    auxToken += code[pointer]
+                }
+            }
         }
 
-        if (checkCharacters(auxToken)){
-            if (auxToken == "=")
-                stack.push("=")
-            else{
-                if (isOperator(auxToken))
-                    pushOperator(auxToken)
-                else
-                    pushSymbol(auxToken)
-                stack.clear()
-            }
-        }else{
-            generateError(ErrorCodes.UNKNOWN_SYMBOL, auxToken, row)
+        when (checkCharacters(auxToken)){
+            true ->when{
+                        isOperator(auxToken) -> pushOperator(auxToken)
+                        else -> pushSymbol(auxToken)
+                    }
+            false -> generateError(ErrorCodes.UNKNOWN_SYMBOL, auxToken, row)
         }
         column += auxToken.length
         this.read()
@@ -224,9 +237,9 @@ class Lexer (val code: String) {
     private fun pushID(token: String, type: String = "") {
         if (type != ""){
             val length = getTypeLength(type)
-            this.hashtable.push(Token(token,type,length = length, row = row,column = column,scope = scope,category = Categories.IDENTIFIER))
+            this.hashTable.push(Token(token,type,length = length, row = row,column = column,scope = scope,category = Categories.IDENTIFIER))
         }else{
-            this.hashtable.push(Token(token,type, row = row,column = column,scope = scope,category = Categories.IDENTIFIER))
+            this.hashTable.push(Token(token,type, row = row,column = column,scope = scope,category = Categories.IDENTIFIER))
         }
     }
 
@@ -235,7 +248,7 @@ class Lexer (val code: String) {
      */
     private fun pushOperator(token: String) {
         if (token != ""){
-            this.hashtable.push(Token(token, row = row,category = Categories.OPERATOR))
+            this.hashTable.push(Token(token, row = row,category = Categories.OPERATOR))
         }
     }
 
@@ -244,7 +257,7 @@ class Lexer (val code: String) {
      */
     private fun pushSymbol(token: String) {
         if (token != ""){
-            this.hashtable.push(Token(token,"", 0,row, column,"",category = Categories.SYMBOL ))
+            this.hashTable.push(Token(token,"", 0,row, column,"",category = Categories.SYMBOL ))
         }
         if (isScopeInit(token)){
             scope++
@@ -259,15 +272,19 @@ class Lexer (val code: String) {
     }
 
     private fun isValidIdentifier(token: String): Boolean {
-        return Identifier(token).status
+        return IdentifierDFA(token).status
     }
 
     private fun isReserved(token: String): Boolean {
         return reservedWords.contains(token)
     }
 
-    private fun isNumeric(token: String): Boolean {
-        return Numeric(auxToken).status
+    private fun isFloat(token: String): Boolean {
+        return FloatDFA(token).status
+    }
+
+    private fun isInteger(token: String): Boolean {
+        return IntegerDFA(token).status
     }
 
     private fun isOperator(token: String) :  Boolean {
@@ -275,7 +292,7 @@ class Lexer (val code: String) {
     }
 
     private fun isValidString(token: String): Boolean {
-        return Strings(token).status
+        return StringDFA(token).status
     }
 
     private fun isScopeFinal(token: String): Boolean {
@@ -286,12 +303,16 @@ class Lexer (val code: String) {
         return scopeInitToken.contains(token)
     }
 
+    private fun isDelimiter(c: Char): Boolean {
+        return delimiters.contains(c)
+    }
+
     private fun checkCharacters(chars: String): Boolean {
         return dictionary.contains(chars)
     }
 
     private fun updateValue(key: String, value: String) {
-        hashtable.updateValue(key,value)
+        hashTable.updateValue(key,value)
     }
 
     /**
