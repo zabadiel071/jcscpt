@@ -1,0 +1,72 @@
+<script> ::= <sentencia_interna> <script> | <VACIA>
+
+<sentencia_interna> ::= <declaracion_funcion>
+        |   <sentencia>
+
+<lista_sentencias> ::= <sentencia_interna> <lista_sentencias> | <VACIA>
+
+<sentencia> ::= "{" <lista_sentencias> "}"
+        |   <sentencia_seleccion>
+        |   <sentencia_iteracion>
+        |   <sentencia_declarativa>
+        |   <expresion>
+        |   <return>
+
+<sentencia_seleccion> ::= "if" "(" <expresion> ")" <sentencia> ["else" <sentencia>]
+
+<sentencia_iteracion> ::= 
+        | "while" "(" <expresion> ")" <sentencia>
+        | "for" "(" [{<expr}] ";" [{<expresion>}] ";" [{<expresion>}] ")" <sentencia>
+
+#DECLARACIONES DE CAMPOS#
+    <sentencia_declarativa> ::= <tipo> <declaraciones>
+
+    <declaraciones> ::= <declaracion_simple> | <declaracion_simple> "," <declaraciones>
+
+    <declaracion_simple> ::= <id> | <expresion_asignacion>
+
+    <expresion_asignacion> ::= <id> "=" <expresion> 
+#
+
+#DECLARACIONES PARA FUNCION#
+    <declaracion_funcion> ::= "function" <identificador> "(" <declaracion_parametros> ")" "{" <sentencia> "}"
+
+    <declaracion_parametros> ::= <tipo> <id> <declaracion_parametros>'| <VACIA>
+
+    <declaracion_parametros>' ::= "," <declaracion_parametros> | <VACIA>
+#
+
+<expresion> ::= <id> 
+        |   <expresion_asignacion>
+        |   <id> "++"
+        |   "++" <id>
+        |   <id> "--"
+        |   "--" <id>
+        |    <expresion> <operador_medio> <expresion>
+        |   <valor_numerico>
+        |   <string>
+
+<operador_medio> ::= <operador_logico> 
+        | <operador_aritmetico> 
+        | <operador_relacional>
+        | <operador_asignacion>
+
+<operador_asignacion> ::= "+=" | "-=" | "*=" | "/=" | ".=" | "^="
+
+<operador_logico> ::= "||" | "&&" | "or" | "and" | "xor" | "|" | "&" 
+
+<operador_aritmetico> ::= "+" | "-" | "*" | "/" | "%" | "<<" | ">>"
+
+<operador_relacional> ::= "==" | "!=" | "<" | ">" | "<=" | ">="   
+
+<tipo> ::= "int"
+        | "double"
+        | "float"
+        | "boolean"
+        | "string"
+
+<return> ::= “return” <expresion>
+
+<valor_numerico> ::= [ 0-9 ]+[.(0-9)+]?
+
+<string> ::= "\"" [A-Z|a-z|0-9|SY|OP]* "\""
