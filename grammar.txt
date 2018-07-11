@@ -15,6 +15,7 @@
         |   <loop>
         |   <declaracion>
         |   <return>
+        |	<expresion>
         |   E
 
     <if> ::= <if_cerrado> | <if_abierto>
@@ -26,16 +27,21 @@
 
     <loop> ::= 
         |   "while" "(" <expresion> ")" <sentencia>
-        |   "for" "(" [{<expr>}] ";" [{<expresion>}] ";" [{<expresion>}] ")" <sentencia>
+        |   "for" "(" <for_expresion> ";" <for_expresion> ";" <for_expresion> ")" <sentencia>
+
+    <for_expresion> ::= <declaracion> | <expresion> | E
 
     <return> ::= “return” <expresion>
 
-    <declaracion> ::= <tipo> <identificador> <asignacion> <cola_declaraciones>
+    <declaracion> ::= <tipo> <identificador> <cola_declaraciones> 
+    	| <tipo> <asignacion> <cola_declaraciones>
 
-    <cola_declaraciones> ::= "," <identificador> <asignacion> <cola_declaraciones>
+    <cola_declaraciones> ::= "," <asignacion> <cola_declaraciones> 
+    	| "," <identificador> <cola_declaraciones>
         |   E
 
-    <asignacion> ::= "=" <expresion>
+    <asignacion> ::= <identificador>"=" <expresion>
+    	|	<identificador> "=" <valor>
         |   E
 
 #EXPRESIONES
@@ -43,8 +49,9 @@
         |   <expresionAritmetica>
         |   <termino> <expresion1>
         |   "(" <expresion> ")"
+        |	<asignacion>
 
-    <expresion1> ::=  <termino> <expresion1> | E
+    <expresion1> ::=  <operador> <expresion1> | E
 
     <termino> ::= <expresion> | <identificador>
 
@@ -75,9 +82,6 @@
         | "boolean"
         | "string"
 
-    <NUMERICO> ::= [ 0-9 ]+[.(0-9)+]?
-
-    <STRING> ::= "\"" [A-Z|a-z|0-9|SY|OP]* "\""
 
 #FUNCIONES
     <declaracion_funcion> ::= "function" <identificador> "(" <parametros_funcion> ")" "{" <lista_sentencias> "}"
@@ -88,3 +92,37 @@
 
     <cola_parametros> ::= "," <declaracion_parametros>
         |   E
+
+    <llamada_funcion> ::= <identificador> "(" <lista_parametros> ")"
+
+    <lista_parametros> ::= <expresion> <lista_parametros_cola>
+    	|	E
+
+    <lista_parametros_cola> ::= ","    	
+
+#VALORES 
+	<valor> := <NU> | <ST> | <BOOL>
+
+    <NU> ::= [ 0-9 ]+[.(0-9)+]?
+
+    <ST> ::= "\"" [A-Z|a-z|0-9|SY|OP]* "\""
+
+    <BOOL> ::= true | false
+
+#####################NOTAS###############
+	<programa> ::= <proposicion_compuesta>
+
+	<proposicion_compuesta> ::= begin <proposiciones_optativas> end
+
+	<proposiciones_optativas> ::= <lista_proposiciones> | E
+
+	<lista_proposiciones> ::= <proposicion> | <lista_proposiciones> ; <proposicion>
+
+	<proposicion> ::= <asignacion>
+		|	<decision>
+		|	<ciclo>
+
+	#Eliminacion de recursividad
+	<lista_proposiciones> ::= <proposicion> <lista_proposiciones1>
+	<lista_proposiciones1> ::= ; <proposicion> <lista_proposiciones1>
+		A-> (alpha) B (beta)
