@@ -40,21 +40,32 @@
 
 #EXPRESIONES
     <expresion> ::= 
-        |   <identificador>
-        |   <NUMERICO>
-        |   <STRING>
-        |   <expresion> <operador> <expresion>
+        |   <expresionAritmetica>
+        |   <termino> <expresion1>
+        |   "(" <expresion> ")"
+
+    <expresion1> ::=  <termino> <expresion1> | E
+
+    <termino> ::= <expresion> | <identificador>
+
+#EXPRESION ARITMETICA   
+    <expresionAritmetica> ::= <terminoArtimetico> <expresionAritmetica1>
+
+    <expresionAritmetica1> ::= "+" <terminoArtimetico> <expresionAritmetica1> | "-" <terminoArtimetico> <expresionAritmetica1>  | E
+
+    <terminoArtimetico> ::= <factor> <termino1>
+
+    <termino1> ::= "*" <factor> <termino1> | "/" <factor> <termino1> | E
+
+    <factor> ::= "(" <expresion> ")" | <id>
 
     <operador> ::= <operador_logico> 
-        | <operador_aritmetico> 
         | <operador_relacional>
         | <operador_asignacion>
 
     <operador_asignacion> ::= "+=" | "-=" | "*=" | "/=" | ".=" | "^="
 
     <operador_logico> ::= "||" | "&&" | "or" | "and" | "xor" | "|" | "&" 
-
-    <operador_aritmetico> ::= "+" | "-" | "*" | "/" | "%" | "<<" | ">>"
 
     <operador_relacional> ::= "==" | "!=" | "<" | ">" | "<=" | ">="   
 
