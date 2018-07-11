@@ -1,72 +1,79 @@
-<script> ::= <sentencia_interna> <script> | <VACIA>
+/**
+*   E-> Cadena vacia
+*/
 
-<sentencia_interna> ::= <declaracion_funcion>
-        |   <sentencia>
+<script> ::= <declaracion_funcion> <script>
+    |   <lista_sentencias> <script>
+    |   E
 
-<lista_sentencias> ::= <sentencia_interna> <lista_sentencias> | <VACIA>
+<lista_sentencias> ::= <sentencia> <lista_sentencias>
+    |   E  
 
-<sentencia> ::= "{" <lista_sentencias> "}"
-        |   <sentencia_seleccion>
-        |   <sentencia_iteracion>
-        |   <sentencia_declarativa>
-        |   <expresion>
+#SENTENCIAS
+    <sentencia> ::= "{" <lista_sentencias> "}"
+        |   <if>
+        |   <loop>
+        |   <declaracion>
         |   <return>
+        |   E
 
-<sentencia_seleccion> ::= "if" "(" <expresion> ")" <sentencia> ["else" <sentencia>]
+    <if> ::= <if_cerrado> | <if_abierto>
 
-<sentencia_iteracion> ::= 
-        | "while" "(" <expresion> ")" <sentencia>
-        | "for" "(" [{<expr}] ";" [{<expresion>}] ";" [{<expresion>}] ")" <sentencia>
+    <if_cerrado> ::= "if" "(" <expresion> ")" <sentencia> "else" <if_cerrado>
 
-#DECLARACIONES DE CAMPOS#
-    <sentencia_declarativa> ::= <tipo> <declaraciones>
+    <if_abierto> ::= "if" "(" <expresion> ")" <sentencia>
+        |   "if" "(" <expresion> ")" <sentencia> "else" <if_abierto>
 
-    <declaraciones> ::= <declaracion_simple> | <declaracion_simple> "," <declaraciones>
+    <loop> ::= 
+        |   "while" "(" <expresion> ")" <sentencia>
+        |   "for" "(" [{<expr>}] ";" [{<expresion>}] ";" [{<expresion>}] ")" <sentencia>
 
-    <declaracion_simple> ::= <id> | <expresion_asignacion>
+    <return> ::= “return” <expresion>
 
-    <expresion_asignacion> ::= <id> "=" <expresion> 
-#
+    <declaracion> ::= <tipo> <identificador> <asignacion> <cola_declaraciones>
 
-#DECLARACIONES PARA FUNCION#
-    <declaracion_funcion> ::= "function" <identificador> "(" <declaracion_parametros> ")" "{" <sentencia> "}"
+    <cola_declaraciones> ::= "," <identificador> <asignacion> <cola_declaraciones>
+        |   E
 
-    <declaracion_parametros> ::= <tipo> <id> <declaracion_parametros>'| <VACIA>
+    <asignacion> ::= "=" <expresion>
+        |   E
 
-    <declaracion_parametros>' ::= "," <declaracion_parametros> | <VACIA>
-#
+#EXPRESIONES
+    <expresion> ::= 
+        |   <identificador>
+        |   <NUMERICO>
+        |   <STRING>
+        |   <expresion> <operador> <expresion>
 
-<expresion> ::= <id> 
-        |   <expresion_asignacion>
-        |   <id> "++"
-        |   "++" <id>
-        |   <id> "--"
-        |   "--" <id>
-        |    <expresion> <operador_medio> <expresion>
-        |   <valor_numerico>
-        |   <string>
-
-<operador_medio> ::= <operador_logico> 
+    <operador> ::= <operador_logico> 
         | <operador_aritmetico> 
         | <operador_relacional>
         | <operador_asignacion>
 
-<operador_asignacion> ::= "+=" | "-=" | "*=" | "/=" | ".=" | "^="
+    <operador_asignacion> ::= "+=" | "-=" | "*=" | "/=" | ".=" | "^="
 
-<operador_logico> ::= "||" | "&&" | "or" | "and" | "xor" | "|" | "&" 
+    <operador_logico> ::= "||" | "&&" | "or" | "and" | "xor" | "|" | "&" 
 
-<operador_aritmetico> ::= "+" | "-" | "*" | "/" | "%" | "<<" | ">>"
+    <operador_aritmetico> ::= "+" | "-" | "*" | "/" | "%" | "<<" | ">>"
 
-<operador_relacional> ::= "==" | "!=" | "<" | ">" | "<=" | ">="   
+    <operador_relacional> ::= "==" | "!=" | "<" | ">" | "<=" | ">="   
 
-<tipo> ::= "int"
+    <tipo> ::= "int"
         | "double"
         | "float"
         | "boolean"
         | "string"
 
-<return> ::= “return” <expresion>
+    <NUMERICO> ::= [ 0-9 ]+[.(0-9)+]?
 
-<valor_numerico> ::= [ 0-9 ]+[.(0-9)+]?
+    <STRING> ::= "\"" [A-Z|a-z|0-9|SY|OP]* "\""
 
-<string> ::= "\"" [A-Z|a-z|0-9|SY|OP]* "\""
+#FUNCIONES
+    <declaracion_funcion> ::= "function" <identificador> "(" <parametros_funcion> ")" "{" <lista_sentencias> "}"
+
+    <parametros_funcion> ::= <declaracion_parametros> | E    
+
+    <declaracion_parametros> ::= <tipo> <id> <cola_parametros>
+
+    <cola_parametros> ::= "," <declaracion_parametros>
+        |   E
