@@ -6,7 +6,7 @@
     |   <lista_sentencias> <script>
     |   E
 
-<lista_sentencias> ::= <sentencia> <lista_sentencias>
+<lista_sentencias> ::=  <sentencia> <lista_sentencias>
     |   E  
 
 #SENTENCIAS
@@ -36,7 +36,7 @@
     <declaracion> ::= <tipo> <identificador> <cola_declaraciones> 
     	| <tipo> <asignacion> <cola_declaraciones>
 
-    <cola_declaraciones> ::= "," <asignacion> <cola_declaraciones> 
+    <cola_declaraciones> ::= 	"," <asignacion> <cola_declaraciones> 
     	| "," <identificador> <cola_declaraciones>
         |   E
 
@@ -46,7 +46,7 @@
 
 #EXPRESIONES
     <expresion> ::= 
-        |   <expresionAritmetica>
+        |   <expresion_aritmetica>
         |   <termino> <expresion1>
         |   "(" <expresion> ")"
         |	<asignacion>
@@ -56,11 +56,11 @@
     <termino> ::= <expresion> | <identificador>
 
 #EXPRESION ARITMETICA   
-    <expresionAritmetica> ::= <terminoArtimetico> <expresionAritmetica1>
+    <expresion_aritmetica> ::= <termino_aritmetico> <expresion_aritmetica1>
 
-    <expresionAritmetica1> ::= "+" <terminoArtimetico> <expresionAritmetica1> | "-" <terminoArtimetico> <expresionAritmetica1>  | E
+    <expresion_aritmetica1> ::= "+" <termino_aritmetico> <expresion_aritmetica1> | "-" <termino_aritmetico> <expresion_aritmetica1>  | E
 
-    <terminoArtimetico> ::= <factor> <termino1>
+    <termino_aritmetico> ::= <factor> <termino1>
 
     <termino1> ::= "*" <factor> <termino1> | "/" <factor> <termino1> | E
 
@@ -98,7 +98,7 @@
     <lista_parametros> ::= <expresion> <lista_parametros_cola>
     	|	E
 
-    <lista_parametros_cola> ::= ","    	
+    <lista_parametros_cola> ::= ","<lista_parametros> | E
 
 #VALORES 
 	<valor> := <NU> | <ST> | <BOOL>
