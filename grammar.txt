@@ -7,7 +7,7 @@
     |   E
 
 <lista_sentencias> ::=  <sentencia> <lista_sentencias>
-    |   E  
+    |   E   
 
 #SENTENCIAS
     <sentencia> ::= "{" <lista_sentencias> "}"
@@ -51,7 +51,7 @@
         |   "(" <expresion> ")"
         |	<asignacion>
 
-    <expresion1> ::=  <operador> <expresion1> | E
+    <expresion1> ::=  <operador> <termino> | E
 
     <termino> ::= <expresion> | <identificador>
 
