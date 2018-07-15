@@ -1,0 +1,15 @@
+[
+  {
+    "noTerminal": "E",
+    "productions":  [
+      {
+        "terminal":"+",
+        "noTerminals": ["Hello","Goodbye"]
+      },
+      {
+        "terminal":"=",
+        "noTerminals": ["HI","SEt"]
+      }
+    ]
+  }
+]
