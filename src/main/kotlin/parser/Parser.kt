@@ -96,7 +96,7 @@ class Parser(val tokenList:Queue<String>) {
     }
 
     /**
-     * 
+     *
      */
     private fun isTerminal(s: String): Boolean {
         return AnalysisTable.terminals.contains(s)

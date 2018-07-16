@@ -1,78 +1,9 @@
 [
   {
-    "noTerminal": "E",
-    "productions":  [
-      {
-        "terminal":"id",
-        "symbols": ["T","E1"]
-      },
-      {
-        "terminal":"(",
-        "symbols": ["T","E1"]
-      }
+    "noTerminal":"",
+    "productions":[
+
     ],
-    "sync": [")","$"]
-  },
-  {
-    "noTerminal": "E1",
-    "productions": [
-      {
-        "terminal": "+",
-        "symbols": ["+","T","E1"]
-      },
-      {
-        "terminal": "$",
-        "symbols": [""]
-      }
-    ]
-  },
-  {
-    "noTerminal": "T",
-    "productions": [
-      {
-        "terminal": "id",
-        "symbols": ["F", "T1"]
-      },
-      {
-        "terminal": "(",
-        "symbols": ["F", "T1"]
-      }
-    ],
-    "sync": ["+",")","$"]
-  },
-  {
-    "noTerminal": "T1",
-    "productions": [
-      {
-        "terminal": "+",
-        "symbols": [""]
-      },
-      {
-        "terminal": "*",
-        "symbols": ["*","F", "T1"]
-      },
-      {
-        "terminal": ")",
-        "symbols": [""]
-      },
-      {
-        "terminal": "$",
-        "symbols": [""]
-      }
-    ]
-  },
-  {
-    "noTerminal": "F",
-    "productions": [
-      {
-        "terminal": "id",
-        "symbols": ["id"]
-      },
-      {
-        "terminal": "(",
-        "symbols": ["(","F",")"]
-      }
-    ],
-    "sync":["+","*",")","$"]
+    "sync":[""]
   }
 ]
