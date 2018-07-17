@@ -6,7 +6,15 @@ import java.io.File
 
 class AnalysisTable{
     companion object {
-        val terminals = listOf<String>("id","+","-","*","/","(",")")
+
+        val terminals = listOf<String>(
+                "id",
+                "function",
+                "(",")",
+                "{","}",
+                "type",
+                ","
+        )
 
         fun analysisTable(): HashMap<String, ArrayList<EntryData>> {
             val jsonString = File("analysisTable.json").readText()

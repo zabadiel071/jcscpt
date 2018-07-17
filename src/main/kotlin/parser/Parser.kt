@@ -15,7 +15,7 @@ class Parser(val tokenList:Queue<String>) {
     fun syntaxAnalysis(){
         var token = tokenList.poll()
         stack.push("$")
-        stack.push("E")
+        stack.push("SCRIPT")
         loop@ while (!stack.empty()){
             val productions = analysisTable[stack.peek()]       //All the productions for the No Terminal given
             when{
@@ -65,14 +65,14 @@ class Parser(val tokenList:Queue<String>) {
      *
      */
     private fun parseError(s:String){
-        trace.add("Unexpected token $s")
+        trace.add("Unexpected token [$s]")
     }
 
     /**
      *
      */
     private fun event(s:String){
-        trace.add("Match $s")
+        trace.add("Match [$s]")
     }
 
     /**
@@ -81,9 +81,12 @@ class Parser(val tokenList:Queue<String>) {
     private fun event(s: String?, symbols: ArrayList<String>) {
         var production =""
         symbols.forEach { s: String ->
-            production += s
+            production += " $s"
         }
-        trace.add("$s -> $production")
+        if (production.trim()!="")
+            trace.add("$s -> $production")
+        else
+            trace.add("$s -> E")
     }
 
     /**
@@ -103,4 +106,19 @@ class Parser(val tokenList:Queue<String>) {
     }
 
 
+}
+
+fun main(args: Array<String>) {
+    val list:Queue<String> = LinkedList<String>()
+
+    list.addAll(listOf("$"))
+
+    //Test with function declarations
+    //list.addAll(listOf("function", "id", "(", "type", "id" , ",", "type", "id",")", "{", "}" ))
+    //list.addAll(listOf("function", "id", "(", "type", "id" , ",", "type", "id",")", "{", "}","$" ))
+
+    val parser = Parser(list)
+    parser.syntaxAnalysis()
+
+    println(parser.trace)
 }

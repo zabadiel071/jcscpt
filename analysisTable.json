@@ -1,8 +1,96 @@
 [
   {
-    "noTerminal":"",
+    "noTerminal":"SCRIPT",
+    "productions": [
+      {
+        "terminal":"function",
+        "symbols":["DECLARE_FUNCTION", "SCRIPT'"]
+      },
+      {
+        "terminal": "$",
+        "symbols": ["SCRIPT'"]
+      }
+    ]
+  },
+  {
+    "noTerminal":"SCRIPT'",
+    "productions": [
+      {
+        "terminal":"function",
+        "symbols":["SCRIPT"]
+      },
+      {
+        "terminal":"$",
+        "symbols":[""]
+      }
+    ]
+  },
+  {
+    "noTerminal":"DECLARE_FUNCTION",
     "productions":[
-
+      {
+        "terminal":"function",
+        "symbols":[
+          "function","id","(","FUNCTION_PARAMS",")","{",
+          "STATEMENT_LIST", "}"
+        ]
+      }
+    ],
+    "sync":[""]
+  },
+  {
+    "noTerminal":"FUNCTION_PARAMS",
+    "productions":[
+      {
+        "terminal":"type",
+        "symbols":[
+          "DECLARE_PARAMS"
+        ]
+      },
+      {
+        "terminal":"$",
+        "symbols": [""]
+      }
+    ],
+    "sync":[""]
+  },
+  {
+  "noTerminal":"DECLARE_PARAMS",
+  "productions":[
+    {
+      "terminal":"type",
+      "symbols":[
+        "type","id","DECLARE_PARAMS'"
+      ]
+    }
+  ],
+  "sync":[""]
+  },
+  {
+    "noTerminal":"DECLARE_PARAMS'",
+    "productions":[
+      {
+        "terminal":",",
+        "symbols":[
+          ",", "DECLARE_PARAMS"
+        ]
+      },
+      {
+        "terminal":")",
+        "symbols": [""]
+      }
+    ],
+    "sync":[""]
+  },
+  {
+    "noTerminal":"STATEMENT_LIST",
+    "productions":[
+      {
+        "terminal":"}",
+        "symbols":[
+          ""
+        ]
+      }
     ],
     "sync":[""]
   }
