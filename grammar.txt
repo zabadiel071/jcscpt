@@ -44,37 +44,61 @@
     	|	<identificador> "=" <valor>
         |   E
 
-#EXPRESIONES
-    <expresion> ::= 
-        |   <expresion_aritmetica>
-        |   <termino> <expresion1>
-        |   "(" <expresion> ")"
-        |	<asignacion>
+    #EXPRESIONES
+    <expresion> ::= <expresion_asignacion>
+            |   <expresion> , <expresion_asignacion>
 
-    <expresion1> ::=  <operador> <expresion1> | E
+    <expresion_asignacion> ::= <expresion_condicional>
+            |   <asignacion>
 
-    <termino> ::= <expresion> | <identificador>
+    <asignacion> ::= id = <expresion_asignacion>
 
-#EXPRESION ARITMETICA   
-    <expresion_aritmetica> ::= <termino_aritmetico> <expresion_aritmetica1>
+    <expresion_condicional> ::= <or_condicional>
 
-    <expresion_aritmetica1> ::= "+" <termino_aritmetico> <expresion_aritmetica1> | "-" <termino_aritmetico> <expresion_aritmetica1>  | E
+    <or_condicional> ::= <and-condicional> <or_condicional1>
 
-    <termino_aritmetico> ::= <factor> <termino1>
+    <or_condicional1> ::= || <and-condicional> <or_condicional1>
+            |   E
 
-    <termino1> ::= "*" <factor> <termino1> | "/" <factor> <termino1> | E
+    <and-condicional> ::= <expresion_igualdad> <and-condicional1>
 
-    <factor> ::= "(" <expresion> ")" | <id>
+    <and-condicional1> ::= && <expresion_igualdad> <and-condicional1>
+            |   E
 
-    <operador> ::= <operador_logico> 
-        | <operador_relacional>
-        | <operador_asignacion>
+    <expresion_igualdad> ::= <expresion_relacional> <expresion_igualdad1>
 
-    <operador_asignacion> ::= "+=" | "-=" | "*=" | "/=" | ".=" | "^="
+    <expresion_igualdad1> ::= == <expresion_relacional> <expresion_igualdad1>
+            |   !=  <expresion_relacional> <expresion_igualdad1>
+            |   E
 
-    <operador_logico> ::= "||" | "&&" | "or" | "and" | "xor" | "|" | "&" 
+    <expresion_relacional> ::= <expresion_suma> <expresion_relacional1>
 
-    <operador_relacional> ::= "==" | "!=" | "<" | ">" | "<=" | ">="   
+    <expresion_relacional1> ::= >= <expresion_suma> <expresion_relacional1>
+            |   <= <expresion_suma> <expresion_relacional1>
+            |   == <expresion_suma> <expresion_relacional1>
+            |   != <expresion_suma> <expresion_relacional1>    
+            |   >  <expresion_suma> <expresion_relacional1>    
+            |   <  <expresion_suma> <expresion_relacional1>    
+            |   E    
+
+    <expresion_suma> ::= <expresion_multiplicativa> <expresion_suma1>
+
+    <expresion_suma1> ::= + <expresion_multiplicativa> <expresion_suma1>    
+            |   - <expresion_multiplicativa> <expresion_suma1>  
+            |   E
+
+    <expresion_multiplicativa> ::= <expresion_unaria> <expresion_multiplicativa1>
+
+    <expresion_multiplicativa1> ::= * <expresion_unaria> <expresion_multiplicativa1>
+            |   * <expresion_unaria> <expresion_multiplicativa1>
+            |   / <expresion_unaria> <expresion_multiplicativa1>
+            |   E
+
+    <expresion_unaria> ::= <expresion_postfija>
+            |   ++ <expresion_unaria>
+            |   -- <expresion_unaria>
+
+    <expresion_primaria> ::= id | valor | ( <expresion> )  
 
     <tipo> ::= "int"
         | "double"
