@@ -113,6 +113,14 @@
         "symbols":["UNARY_EXPR"]
       },
       {
+        "terminal": "++",
+        "symbols": ["UNARY_EXPR"]
+      },
+      {
+        "terminal": "--",
+        "symbols": ["UNARY_EXPR"]
+      },
+      {
         "terminal": "$",
         "symbols": ["'"]
       }
@@ -247,6 +255,14 @@
       {
         "terminal": "(",
         "symbols": [ "PRIMARY_EXPR" ]
+      },
+      {
+        "terminal": "++",
+        "symbols": ["++", "PRIMARY_EXPR"]
+      },
+      {
+        "terminal": "--",
+        "symbols": ["--","PRIMARY_EXPR"]
       }
     ]
   },

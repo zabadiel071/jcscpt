@@ -18,7 +18,9 @@ class AnalysisTable{
                 "type",
                 ",",
                 "value",
-                "="
+                "=",
+                "++",
+                "--"
         )
 
         fun analysisTable(): HashMap<String, ArrayList<EntryData>> {
