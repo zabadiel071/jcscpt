@@ -9,11 +9,16 @@ class AnalysisTable{
 
         val terminals = listOf<String>(
                 "id",
+                "+",
+                "-",
+                "*",
                 "function",
                 "(",")",
                 "{","}",
                 "type",
-                ","
+                ",",
+                "value",
+                "="
         )
 
         fun analysisTable(): HashMap<String, ArrayList<EntryData>> {

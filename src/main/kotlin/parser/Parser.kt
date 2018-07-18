@@ -1,5 +1,6 @@
 package parser
 
+import java.io.File
 import java.util.*
 
 class Parser(val tokenList:Queue<String>) {
@@ -15,7 +16,7 @@ class Parser(val tokenList:Queue<String>) {
     fun syntaxAnalysis(){
         var token = tokenList.poll()
         stack.push("$")
-        stack.push("SCRIPT")
+        stack.push("STATEMENT")
         loop@ while (!stack.empty()){
             val productions = analysisTable[stack.peek()]       //All the productions for the No Terminal given
             when{
@@ -65,7 +66,10 @@ class Parser(val tokenList:Queue<String>) {
      *
      */
     private fun parseError(s:String){
-        trace.add("Unexpected token [$s]")
+        if (s == "$")
+            trace.add("Unexpected end of expression")
+        else
+            trace.add("Unexpected token [$s]")
     }
 
     /**
@@ -109,13 +113,17 @@ class Parser(val tokenList:Queue<String>) {
 }
 
 fun main(args: Array<String>) {
+
     val list:Queue<String> = LinkedList<String>()
 
-    list.addAll(listOf("$"))
+    val file = File(".syntaxfile")
+    val fileContent = file.readText()
 
-    //Test with function declarations
-    //list.addAll(listOf("function", "id", "(", "type", "id" , ",", "type", "id",")", "{", "}" ))
-    //list.addAll(listOf("function", "id", "(", "type", "id" , ",", "type", "id",")", "{", "}","$" ))
+    val tokenizer = StringTokenizer(fileContent," ")
+
+    while (tokenizer.hasMoreTokens()){
+        list.add(tokenizer.nextToken())
+    }
 
     val parser = Parser(list)
     parser.syntaxAnalysis()
