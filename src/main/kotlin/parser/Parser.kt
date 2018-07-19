@@ -16,7 +16,7 @@ class Parser(val tokenList:Queue<String>) {
     fun syntaxAnalysis(){
         var token = tokenList.poll()
         stack.push("$")
-        stack.push("STATEMENT")
+        stack.push("ASSIGNMENT_EXPR")
         loop@ while (!stack.empty()){
             val productions = analysisTable[stack.peek()]       //All the productions for the No Terminal given
             when{
@@ -39,7 +39,7 @@ class Parser(val tokenList:Queue<String>) {
                 else -> {
                     var symbolsTail:ArrayList<String> = ArrayList()
                     productions!!.forEach { entryData: EntryData ->
-                        if (entryData.terminal == token)
+                        if (entryData.terminals.contains(token))
                             symbolsTail = entryData.symbols
                     }
                     event(stack.pop(),symbolsTail)
@@ -98,7 +98,7 @@ class Parser(val tokenList:Queue<String>) {
      */
     private fun isErrorEntry(s: String?,productions: ArrayList<EntryData>?): Boolean {
         return productions!!.none { entryData: EntryData ->
-            s == entryData.terminal
+            entryData.terminals.contains(s)
         }
     }
 
@@ -121,9 +121,8 @@ fun main(args: Array<String>) {
 
     val tokenizer = StringTokenizer(fileContent," ")
 
-    while (tokenizer.hasMoreTokens()){
+    while (tokenizer.hasMoreTokens())
         list.add(tokenizer.nextToken())
-    }
 
     val parser = Parser(list)
     parser.syntaxAnalysis()

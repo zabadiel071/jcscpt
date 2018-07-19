@@ -1,10 +1,10 @@
 package parser
 
-data class EntryData(val terminal:String,
+data class EntryData(val terminals:ArrayList<String>,
                      val symbols:ArrayList<String>
 ){
     override fun toString(): String {
-        return "(terminal=$terminal, symbols=$symbols)"
+        return "(terminals=$terminals, symbols=$symbols)"
     }
 }
 
