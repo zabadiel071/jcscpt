@@ -8,48 +8,48 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TableColumn?>
 <VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
 
     <HBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
         <VBox spacing="10">
-            <HBox spacing="10">
-                <Button fx:id="btnLexical" prefHeight="30.0" prefWidth="75.0" text="Lexical">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                    </HBox.margin></Button>
-                <Button fx:id="btnSyntax" disable="true" prefHeight="30.0" prefWidth="75.0" text="Syntax">
-                    <HBox.margin>
-                        <Insets top="5.0" />
-                    </HBox.margin></Button>
-                <Button fx:id="btnSemantic" disable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="75.0" text="Semantic" HBox.hgrow="ALWAYS">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                    </HBox.margin></Button>
-            </HBox>
-            <TextArea prefHeight="300.0" prefWidth="600.0">
 
-            </TextArea>
-         <TableView prefHeight="300.0" prefWidth="200.0" />
+            <HBox spacing="10">
+                <Button fx:id="btnAnalysis" prefHeight="30.0" prefWidth="75.0" text="Run analysis" onAction="#startAnalysis" />
+            </HBox>
+
+            <TextArea prefHeight="300.0" prefWidth="600.0"  fx:id="txtInput" />
+
+
+         <TableView prefHeight="250.0" prefWidth="200.0" fx:id="tableSymbols">
+             <TableColumn text="col" >
+
+             </TableColumn>
+         </TableView>
             <HBox.margin>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </HBox.margin>
         </VBox>
 
         <VBox spacing="10.0">
-            <TableView prefHeight="300.0" prefWidth="650.0" VBox.vgrow="ALWAYS">
+            <TableView prefHeight="300.0" prefWidth="650.0" >
                 <VBox.margin>
                     <Insets right="20.0" top="70.0" />
                 </VBox.margin></TableView>
-            <ListView prefHeight="300.0" prefWidth="650.0">
-            <VBox.margin>
-               <Insets right="20.0" />
-            </VBox.margin></ListView>
+
+            <ListView prefHeight="250.0" prefWidth="650.0">
+                <VBox.margin>
+                   <Insets right="20.0" />
+                </VBox.margin>
+            </ListView>
+
         </VBox>
 
     </HBox>
+
    <TextArea prefHeight="100.0" prefWidth="200.0">
       <VBox.margin>
-         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         <Insets bottom="5" left="20.0" right="20.0" top="5" />
       </VBox.margin>
    </TextArea>
 
