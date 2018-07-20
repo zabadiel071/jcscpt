@@ -16,7 +16,7 @@ class Parser(val tokenList:Queue<String>) {
     fun syntaxAnalysis(){
         var token = tokenList.poll()
         stack.push("$")
-        stack.push("ASSIGNMENT_EXPR")
+        stack.push("SCRIPT")
         loop@ while (!stack.empty()){
             val productions = analysisTable[stack.peek()]       //All the productions for the No Terminal given
             when{
@@ -97,7 +97,10 @@ class Parser(val tokenList:Queue<String>) {
      *
      */
     private fun isErrorEntry(s: String?,productions: ArrayList<EntryData>?): Boolean {
-        return productions!!.none { entryData: EntryData ->
+        if (productions == null){
+            return true
+        }
+        return productions.none { entryData: EntryData ->
             entryData.terminals.contains(s)
         }
     }

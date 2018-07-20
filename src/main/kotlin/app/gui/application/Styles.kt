@@ -8,7 +8,6 @@ class Styles: Stylesheet() {
         val wrapper by cssclass()
     }
     init {
-
         wrapper{
             padding = box(10.px)
             fontSize = 14.px
@@ -16,7 +15,6 @@ class Styles: Stylesheet() {
 
         textArea{
             fontSize = 16.px
-
         }
     }
 }

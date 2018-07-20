@@ -1,7 +1,11 @@
 package app.gui.application
 
 import javafx.collections.ObservableList
+import javafx.scene.Parent
 import javafx.scene.control.SelectionMode
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
 import lexer.Lexer
 import lexer.symbolTable.Token
 import tornadofx.*
@@ -9,10 +13,18 @@ import troubleshoot.Error
 import java.util.*
 
 class MainScreen : View() {
+    override val root : VBox by fxml()
+
     //val fileHandler = FileHandler()
     //var lexer:Lexer? = null
     var lexer: Lexer?= null
 
+    init {
+        primaryStage.isMaximized = true
+
+    }
+
+    /**
     val errorList = listview<Error>{
         selectionModel.selectionMode = SelectionMode.MULTIPLE
         this.maxHeight = 150.0
@@ -25,6 +37,7 @@ class MainScreen : View() {
         maxWidth = 400.0
     }
 
+    /**
     override val root = borderpane {
         title = "Analizador Léxico"
 
@@ -48,10 +61,11 @@ class MainScreen : View() {
                         }
                     }
                 }
+
             }
         }
 
-        center{
+        left{
             vbox{
                 add(fileText)
             }
@@ -59,7 +73,7 @@ class MainScreen : View() {
 
         right{
             vbox{
-                minWidth = 600.0
+                maxWidth = 650.0
 
                 tableview(tokenlist){
                     column("Token",Token::token)
@@ -71,7 +85,10 @@ class MainScreen : View() {
                     column("Scope", Token::scope)
                     column("Category",Token::category)
                 }
-                //add(ts)
+
+                tableview<String> {
+
+                }
             }
         }
 
@@ -82,5 +99,6 @@ class MainScreen : View() {
             }
         }
     }
-
+**/
+     * */
 }

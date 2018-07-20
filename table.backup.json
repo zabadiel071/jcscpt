@@ -1,229 +1,185 @@
 [
-  {
-    "noTerminal":"SCRIPT",
-    "productions": [
-      {
-        "terminal":"function",
-        "symbols":["DECLARE_FUNCTION", "SCRIPT'"]
-      },
-      {
-        "terminal": "$",
-        "symbols": ["SCRIPT'"]
-      }
-    ]
-  },
-  {
-    "noTerminal":"SCRIPT'",
-    "productions": [
-      {
-        "terminal":"function",
-        "symbols":["SCRIPT"]
-      },
-      {
-        "terminal":"$",
-        "symbols":[""]
-      }
-    ]
-  },
-  {
-    "noTerminal":"DECLARE_FUNCTION",
+  {"noTerminal":"SCRIPT",
     "productions":[
-      {
-        "terminal":"function",
-        "symbols":[
-          "function","id","(","FUNCTION_PARAMS",")","{",
-          "STATEMENT_LIST", "}"
-        ]
-      }
-    ],
-    "sync":[""]
+      {"terminals" : ["function"], "symbols": ["DECLARE_FUNCTION","SCRIPT'"]},
+      {"terminals" : ["++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if"], "symbols": ["STATEMENT", "SCRIPT'"]},
+      {"terminals" : ["$"], "symbols": [""]}
+    ]
   },
-  {
-    "noTerminal":"FUNCTION_PARAMS",
+  {"noTerminal":"SCRIPT'",
     "productions":[
-      {
-        "terminal":"type",
-        "symbols":[
-          "DECLARE_PARAMS"
-        ]
-      },
-      {
-        "terminal":"$",
-        "symbols": [""]
-      }
-    ],
-    "sync":[""]
+      {"terminals" : ["function"], "symbols": ["DECLARE_FUNCTION","SCRIPT'"]},
+      {"terminals" : ["++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if"], "symbols": ["STATEMENT" , "SCRIPT'"]},
+      {"terminals" : ["$"], "symbols": [""]}
+    ]
   },
-  {
-    "noTerminal":"DECLARE_PARAMS",
+  {"noTerminal":"STATEMENT",
     "productions":[
-      {
-        "terminal":"type",
-        "symbols":[
-          "type","id","DECLARE_PARAMS'"
-        ]
-      }
-    ],
-    "sync":[""]
+      {"terminals" : ["id"], "symbols": ["ASSIGNMENT"]},
+      {"terminals" : ["int", "float", "boolean", "string"], "symbols": ["DECLARATION"]},
+      {"terminals" : ["++"], "symbols": ["++","id"]},
+      {"terminals" : ["--"], "symbols": ["--","id"]},
+      {"terminals" : ["while"], "symbols": ["LOOP"]},
+      {"terminals" : ["if"], "symbols": ["IF"]},
+      {"terminals" : ["return"], "symbols": ["RETURN"]},
+      {"terminals" : ["for"], "symbols": ["FOR"]},
+      {"terminals" : ["_"], "symbols": ["FUNCTION_CALL"]}
+    ]
   },
-  {
-    "noTerminal":"DECLARE_PARAMS'",
+  {"noTerminal":"DECLARATION",
     "productions":[
-      {
-        "terminal":",",
-        "symbols":[
-          ",", "DECLARE_PARAMS"
-        ]
-      },
-      {
-        "terminal":")",
-        "symbols": [""]
-      }
-    ],
-    "sync":[""]
+      {"terminals" : ["int"], "symbols": ["int", "ASSIGNMENT", "DECLARATION'"]},
+      {"terminals" : ["float"], "symbols": ["float", "ASSIGNMENT", "DECLARATION'"]},
+      {"terminals" : ["boolean"], "symbols": ["boolean", "ASSIGNMENT", "DECLARATION'"]},
+      {"terminals" : ["string"], "symbols": ["string", "ASSIGNMENT", "DECLARATION'"]}
+    ]
   },
-  {
-    "noTerminal":"STATEMENT_LIST",
+  {"noTerminal":"DECLARATION'",
     "productions":[
-      {
-        "terminal":"}",
-        "symbols":[
-          ""
-        ]
-      }
-    ],
-    "sync":[""]
-  },
-  {
-    "noTerminal": "EXPR",
-    "productions": [
-      {
-        "terminal": "id",
-        "symbols": ["ADDITIVE_EXPR", "EXPR'"]
-      },
-      {
-        "terminal": "(",
-        "symbols": ["ADDITIVE_EXPR", "EXPR'"]
-      }
+      {"terminals" : [","], "symbols": [",","ASSIGNMENT","DECLARATION'"]},
+      {"terminals" : ["}", "function", "++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if", "$"], "symbols": [""]}
     ]
   },
-  {
-    "noTerminal": "EXPR'",
-    "productions": [
-      {
-        "terminal": "+",
-        "symbols": ["+","ADDITIVE_EXPR","EXPR'"]
-      },
-      {
-        "terminal": "$",
-        "symbols": [""]
-      },
-      {
-        "terminal": ")",
-        "symbols": [""]
-      }
-    ]
-  },
-  {
-    "noTerminal": "ADDITIVE_EXPR",
-    "productions": [
-      {
-        "terminal": "id",
-        "symbols": ["MULTIPLICATIVE_EXPR", "ADDITIVE_EXPR'"]
-      },
-      {
-        "terminal": "(",
-        "symbols": ["MULTIPLICATIVE_EXPR", "ADDITIVE_EXPR'"]
-      }
-    ]
-  },
-  {
-    "noTerminal": "ADDITIVE_EXPR'",
-    "productions": [
-      {
-        "terminal": "+",
-        "symbols": [""]
-      },
-      {
-        "terminal": "*",
-        "symbols": ["*","MULTIPLICATIVE_EXPR", "ADDITIVE_EXPR'"]
-      },
-      {
-        "terminal": ")",
-        "symbols": [""]
-      },
-      {
-        "terminal": "$",
-        "symbols": [""]
-      }
-    ]
-  },
-  {
-    "noTerminal": "MULTIPLICATIVE_EXPR",
-    "productions": [
-      {
-        "terminal": "id",
-        "symbols": ["UNARY_EXPR" , "MULTIPLICATIVE_EXPR'"]
-      },
-      {
-        "terminal": "(",
-        "symbols": ["UNARY_EXPR", "MULTIPLICATIVE_EXPR'"]
-      }
-    ]
-  },
-  {
-    "noTerminal": "MULTIPLICATIVE_EXPR'",
-    "productions": [
-      {
-        "terminal": "*",
-        "symbols": ["*","UNARY_EXPR", "MULTIPLICATIVE_EXPR'"]
-      },
-      {
-        "terminal": "+",
-        "symbols": [""]
-      },
-      {
-        "terminal": "$",
-        "symbols": [""]
-      },
-      {
-        "terminal": ")",
-        "symbols": [""]
-      }
-    ]
-  },
-  {
-    "noTerminal": "UNARY_EXPR",
+  {"noTerminal":"LOOP",
     "productions":[
-      {
-        "terminal":"id",
-        "symbols": ["PRIMARY_EXPR"]
-      },
-      {
-        "terminal":"value",
-        "symbols": ["PRIMARY_EXPR"]
-      },
-      {
-        "terminal": "(",
-        "symbols": [ "PRIMARY_EXPR" ]
-      }
+      {"terminals" : ["while"], "symbols": ["while" , "(" , "ASSIGNMENT_EXPR" , ")" , "{" , "STATEMENT" , "}"]}
     ]
   },
-  {
-    "noTerminal": "PRIMARY_EXPR",
-    "productions": [
-      {
-        "terminal": "id",
-        "symbols": ["id"]
-      },
-      {
-        "terminal": "value",
-        "symbols": ["value"]
-      },
-      {
-        "terminal": "(",
-        "symbols": ["(", "EXPR", ")"]
-      }
+  {"noTerminal":"FOR",
+    "productions":[
+      {"terminals" : ["for"], "symbols": [ "for" , "(" , "ASSIGNMENT_EXPR" , ";" , "ASSIGNMENT_EXPR" , ";" , "ASSIGNMENT_EXPR" , ")" , "{" , "STATEMENT" , "}" ]}
+    ]
+  },
+  {"noTerminal":"IF",
+    "productions":[
+      {"terminals" : ["if"], "symbols": [ "if","(","ASSIGNMENT_EXPR",")","{", "STATEMENT" , "}", "ELSE"]}
+    ]
+  },
+  {"noTerminal":"ELSE",
+    "productions":[
+      {"terminals" : ["else"], "symbols": ["else","{","STATEMENT" , "}"]},
+      {"terminals" : ["}","function","++","--","id","while","return","_","int","float","boolean","string","for", "if", "$"], "symbols": [""]}
+    ]
+  },
+  {"noTerminal":"RETURN",
+    "productions":[
+      {"terminals" : ["return"], "symbols": ["return","ASSIGNMENT_EXPR"]}
+    ]
+  },
+  {"noTerminal":"ASSIGNMENT",
+    "productions":[
+      {"terminals" : ["id"], "symbols": ["id","=","ASSIGNMENT_EXPR"]}
+    ]
+  },
+  {"noTerminal":"ASSIGNMENT_EXPR",
+    "productions":[
+      {"terminals" : ["id", "value", "(", "_"], "symbols": ["LOGICAL_EXPR"]}
+    ]
+  },
+  {"noTerminal":"LOGICAL_EXPR",
+    "productions":[
+      {"terminals" : ["id", "value", "(", "_"], "symbols": ["RELATIONAL_EXPR","LOGICAL_EXPR'"]}
+    ]
+  },
+  {"noTerminal":"LOGICAL_EXPR'",
+    "productions":[
+      {"terminals" : ["&&"], "symbols": ["&&","RELATIONAL_EXPR","LOGICAL_EXPR'"]},
+      {"terminals" : ["||"], "symbols": ["||","RELATIONAL_EXPR","LOGICAL_EXPR'"]},
+      {"terminals" : [",", ")", ";", "}", "function", "++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if", "$"], "symbols": [""]}
+    ]
+  },
+  {"noTerminal":"RELATIONAL_EXPR",
+    "productions":[
+      {"terminals" : ["id", "value", "(", "_"], "symbols": ["ADDITIVE_EXPR","RELATIONAL_EXPR'"]}
+    ]
+  },
+  {"noTerminal":"RELATIONAL_EXPR'",
+    "productions":[
+      {"terminals" : [">="], "symbols": [">=", "ADDITIVE_EXPR", "RELATIONAL_EXPR'"]},
+      {"terminals" : ["=="], "symbols": ["==", "ADDITIVE_EXPR", "RELATIONAL_EXPR'"]},
+      {"terminals" : ["!="], "symbols": ["!=", "ADDITIVE_EXPR", "RELATIONAL_EXPR'"]},
+      {"terminals" : ["<="], "symbols": ["<=", "ADDITIVE_EXPR", "RELATIONAL_EXPR'"]},
+      {"terminals" : [">"], "symbols": [">", "ADDITIVE_EXPR", "RELATIONAL_EXPR'"]},
+      {"terminals" : ["<"], "symbols": ["<", "ADDITIVE_EXPR", "RELATIONAL_EXPR'"]},
+      {"terminals" : ["&&", "||", "," , ")", ";", "}", "function", "++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if", "$"], "symbols": [""]}
+    ]
+  },
+  {"noTerminal":"ADDITIVE_EXPR",
+    "productions":[
+      {"terminals" : ["id", "value", "(", "_"], "symbols": ["MULTIPLICATIVE_EXPR","ADDITIVE_EXPR'"]}
+    ]
+  },
+  {"noTerminal":"ADDITIVE_EXPR'",
+    "productions":[
+      {"terminals" : ["+"], "symbols": ["+","MULTIPLICATIVE_EXPR","ADDITIVE_EXPR'"]},
+      {"terminals" : ["-"], "symbols": ["-","MULTIPLICATIVE_EXPR","ADDITIVE_EXPR'"]},
+      {"terminals" : [">=", "==", "!=", "<=", ">", "<", "&&", "||", "," , ")", ";", "}", "function", "++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if", "$"], "symbols": [""]}
+    ]
+  },
+  {"noTerminal":"MULTIPLICATIVE_EXPR",
+    "productions":[
+      {"terminals" : ["id", "value", "(", "_"], "symbols": ["UNARY_EXPR","MULTIPLICATIVE_EXPR'"]}
+    ]
+  },
+  {"noTerminal":"MULTIPLICATIVE_EXPR'",
+    "productions":[
+      {"terminals" : ["*"], "symbols": ["*","UNARY_EXPR","MULTIPLICATIVE_EXPR'"]},
+      {"terminals" : ["/"], "symbols": ["/", "UNARY_EXPR", "MULTIPLICATIVE_EXPR'"]},
+      {"terminals" : ["+", "-",">=", "==", "!=", "<=", ">", "<", "&&", "||", "," , ")", ";", "}", "function", "++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if", "$"], "symbols": [""]}
+    ]
+  },
+  {"noTerminal":"UNARY_EXPR",
+    "productions":[
+      {"terminals" : ["id", "value", "("], "symbols": ["PRIMARY_EXPR"]},
+      {"terminals" : ["_"], "symbols": ["FUNCTION_CALL"]}
+    ]
+  },
+  {"noTerminal":"PRIMARY_EXPR",
+    "productions":[
+      {"terminals" : ["id"], "symbols": ["id"]},
+      {"terminals" : ["value"], "symbols": ["value"]},
+      {"terminals" : ["("], "symbols": ["(", "ASSIGNMENT_EXPR",")"]}
+    ]
+  },
+  {"noTerminal":"DECLARE_FUNCTION",
+    "productions":[
+      {"terminals" : ["function"], "symbols": ["function", "id", "(", "FUNCTION_PARAMS", ")", "{", "STATEMENT" , "}"]}
+    ]
+  },
+  {"noTerminal":"FUNCTION_PARAMS",
+    "productions":[
+      {"terminals" : ["int, float, boolean, string"], "symbols": ["DECLARE_PARAMS"]},
+      {"terminals" : [")"], "symbols": [""]}
+    ]
+  },
+  {"noTerminal":"DECLARE_PARAMS",
+    "productions":[
+      {"terminals" : ["int"], "symbols": ["int","id","DECLARE_PARAMS'"]},
+      {"terminals" : ["float"], "symbols": ["float", "id", "DECLARE_PARAMS'"]},
+      {"terminals" : ["boolean"], "symbols": ["boolean", "id", "DECLARE_PARAMS'"]},
+      {"terminals" : ["string"], "symbols": ["string", "id","DECLARE_PARAMS'"]}
+    ]
+  },
+  {"noTerminal":"DECLARE_PARAMS'",
+    "productions":[
+      {"terminals" : [","], "symbols": [ "," , "DECLARE_PARAMS"]},
+      {"terminals" : [")"], "symbols": [""]}
+    ]
+  },
+  {"noTerminal":"FUNCTION_CALL",
+    "productions":[
+      {"terminals" : ["_"], "symbols": ["_", "id", "(", "PARAM_LIST", ")"]}
+    ]
+  },
+  {"noTerminal":"PARAM_LIST",
+    "productions":[
+      {"terminals" : ["id", "value", "(", "_"], "symbols": ["ASSIGNMENT_EXPR", "PARAM_LIST'"]}
+    ]
+  },
+  {"noTerminal":"PARAM_LIST'",
+    "productions":[
+      {"terminals" : [","], "symbols": [ "," , "ASSIGNMENT_EXPR","PARAM_LIST'"]},
+      {"terminals" : [")"], "symbols": [""]}
     ]
   }
 ]
