@@ -1,10 +1,14 @@
 package app.gui.application
 
+import javafx.collections.ObservableList
 import javafx.scene.control.SelectionMode
+import javafx.stage.Modality
+import javafx.stage.StageStyle
+import lexer.Lexer
 import lexer.symbolTable.Token
 import tornadofx.*
 import troubleshoot.Error
-import java.util.*
+import kotlin.collections.ArrayList
 
 class MainScreen : View("Analizador de 3 fases") {
 
@@ -12,11 +16,14 @@ class MainScreen : View("Analizador de 3 fases") {
 
     val errorList = listview<Error>{
         selectionModel.selectionMode = SelectionMode.MULTIPLE
+        this.prefWidth = 500.0
     }
 
     val fileText = textarea {
 
     }
+
+    var lexer : Lexer? = null
 
    override val root = vbox {
        addClass(Styles.wrapper)
@@ -24,11 +31,32 @@ class MainScreen : View("Analizador de 3 fases") {
        hbox{
             addClass(Styles.container)
             button("Analisis"){
-
+                action {
+                    lexer = Lexer(fileText.text)
+                    lexer!!.read()
+                    tokenlist.clear()
+                    errorList.items.clear()
+                    runAsync {
+                        lexer!!.hashTable.getHashTable()
+                    } ui { observableList: ObservableList<Token> ->
+                        observableList.forEach { t:Token -> tokenlist.add(t!!) }
+                        if (lexer!!.errorList.isNotEmpty()){
+                            lexer!!.errorList.forEach { error: Error -> errorList.items.add(error) }
+                        }else{
+                            //Start syntax analysis
+                        }
+                    }
+                }
             }
+           button ("Tabla de analisis predictivo "){
+               action {
+                   find<Popup>().openModal(stageStyle = StageStyle.UTILITY,
+                           modality = Modality.NONE)
+               }
+           }
        }
        hbox{
-           addClass(Styles.container)
+            addClass(Styles.container)
             add(fileText)
 
             tableview(tokenlist){
@@ -45,18 +73,12 @@ class MainScreen : View("Analizador de 3 fases") {
 
        hbox{
            addClass(Styles.container)
-            vbox{
-                addClass(Styles.container)
-                label("Analisis predictivo")
-                tableview<String> {
 
-                }
-            }
             vbox{
                 addClass(Styles.container)
                 label("Traza de analisis sintáctico")
                 tableview<String>{
-
+                    prefWidth = 600.0
                 }
             }
 
