@@ -1,128 +1,41 @@
-/**
-*   E-> Cadena vacia
-*/
+SCRIPT -> DECLARE_FUNCTION SCRIPT' | STATEMENT SCRIPT' | E
+SCRIPT' -> DECLARE_FUNCTION SCRIPT' | STATEMENT SCRIPT' | E
 
-<script> ::= <declaracion_funcion> <script>
-    |   <lista_sentencias> <script>
-    |   E
+STATEMENT -> ASSIGNMENT | DECLARATION | ++ id | -- id | LOOP | IF | RETURN | FOR | FUNCTION_CALL
 
-<lista_sentencias> ::=  <sentencia> <lista_sentencias>
-    |   E   
+DECLARATION -> int ASSIGNMENT DECLARATION' | float ASSIGNMENT DECLARATION' | boolean ASSIGNMENT DECLARATION' | string ASSIGNMENT DECLARATION'
+DECLARATION' -> , ASSIGNMENT    DECLARATION' | E
 
-#SENTENCIAS
-    <sentencia> ::= "{" <lista_sentencias> "}"
-        |   <if>
-        |   <loop>
-        |   <declaracion>
-        |   <return>
-        |	<expresion>
-        |   E
+LOOP -> while ( ASSIGNMENT_EXPR )  { STATEMENT }
+FOR -> for ( ASSIGNMENT_EXPR ; ASSIGNMENT_EXPR ; ASSIGNMENT_EXPR ) { STATEMENT }
+IF -> if ( ASSIGNMENT_EXPR ) { STATEMENT } ELSE
+ELSE -> else { STATEMENT } | E
+RETURN -> return ASSIGNMENT_EXPR
 
-    <if> ::= <if_cerrado> | <if_abierto>
+ASSIGNMENT -> id = ASSIGNMENT_EXPR
+ASSIGNMENT_EXPR -> LOGICAL_EXPR
 
-    <if_cerrado> ::= "if" "(" <expresion> ")" <sentencia> "else" <if_cerrado>
+LOGICAL_EXPR ->  RELATIONAL_EXPR        LOGICAL_EXPR’
+LOGICAL_EXPR’ -> && RELATIONAL_EXPR LOGICAL_EXPR’ | OR RELATIONAL_EXPR LOGICAL_EXPR’ | E
 
-    <if_abierto> ::= "if" "(" <expresion> ")" <sentencia>
-        |   "if" "(" <expresion> ")" <sentencia> "else" <if_abierto>
+RELATIONAL_EXPR ->   ADDITIVE_EXPR  RELATIONAL_EXPR’
+RELATIONAL_EXPR’ ->  >=  ADDITIVE_EXPR RELATIONAL_EXPR’ |  ==  ADDITIVE_EXPR RELATIONAL_EXPR’ |  !=  ADDITIVE_EXPR RELATIONAL_EXPR’ |  <=  ADDITIVE_EXPR RELATIONAL_EXPR’ |  >  ADDITIVE_EXPR RELATIONAL_EXPR’ |  <  ADDITIVE_EXPR RELATIONAL_EXPR’ | E
 
-    <loop> ::= 
-        |   "while" "(" <expresion> ")" <sentencia>
-        |   "for" "(" <for_expresion> ";" <for_expresion> ";" <for_expresion> ")" <sentencia>
+ADDITIVE_EXPR -> MULTIPLICATIVE_EXPR    ADDITIVE_EXPR’
+ADDITIVE_EXPR’ -> + MULTIPLICATIVE_EXPR   ADDITIVE_EXPR’ | - MULTIPLICATIVE_EXPR   ADDITIVE_EXPR’ | E
 
-    <for_expresion> ::= <declaracion> | <expresion> | E
+MULTIPLICATIVE_EXPR -> UNARY_EXPR   MULTIPLICATIVE_EXPR’
+MULTIPLICATIVE_EXPR’ -> * UNARY_EXPR    MULTIPLICATIVE_EXPR’ |  / UNARY_EXPR    MULTIPLICATIVE_EXPR’ | E
 
-    <return> ::= “return” <expresion>
+UNARY_EXPR -> PRIMARY_EXPR | FUNCTION_CALL
 
-    <declaracion> ::= <tipo> <identificador> <cola_declaraciones> 
-    	| <tipo> <asignacion> <cola_declaraciones>
+PRIMARY_EXPR -> id | value | ( ASSIGNMENT_EXPR )
 
-    <cola_declaraciones> ::= 	"," <asignacion> <cola_declaraciones> 
-    	| "," <identificador> <cola_declaraciones>
-        |   E
+DECLARE_FUNCTION ->  function id ( FUNCTION_PARAMS ) { STATEMENT }
+FUNCTION_PARAMS ->  DECLARE_PARAMS | E
+DECLARE_PARAMS ->  int id DECLARE_PARAMS' | float id DECLARE_PARAMS' | boolean id DECLARE_PARAMS' | string int id DECLARE_PARAMS'
+DECLARE_PARAMS' ->  , DECLARE_PARAMS | E
 
-    <asignacion> ::= <identificador>"=" <expresion>
-    	|	<identificador> "=" <valor>
-        |   E
-
-#EXPRESIONES
-    <expresion> ::= 
-        |   <expresion_aritmetica>
-        |   <termino> <expresion1>
-        |   "(" <expresion> ")"
-        |	<asignacion>
-
-    <expresion1> ::=  <operador> <termino> | E
-
-    <termino> ::= <expresion> | <identificador>
-
-#EXPRESION ARITMETICA   
-    <expresion_aritmetica> ::= <termino_aritmetico> <expresion_aritmetica1>
-
-    <expresion_aritmetica1> ::= "+" <termino_aritmetico> <expresion_aritmetica1> | "-" <termino_aritmetico> <expresion_aritmetica1>  | E
-
-    <termino_aritmetico> ::= <factor> <termino1>
-
-    <termino1> ::= "*" <factor> <termino1> | "/" <factor> <termino1> | E
-
-    <factor> ::= "(" <expresion> ")" | <id>
-
-    <operador> ::= <operador_logico> 
-        | <operador_relacional>
-        | <operador_asignacion>
-
-    <operador_asignacion> ::= "+=" | "-=" | "*=" | "/=" | ".=" | "^="
-
-    <operador_logico> ::= "||" | "&&" | "or" | "and" | "xor" | "|" | "&" 
-
-    <operador_relacional> ::= "==" | "!=" | "<" | ">" | "<=" | ">="   
-
-    <tipo> ::= "int"
-        | "double"
-        | "float"
-        | "boolean"
-        | "string"
-
-
-#FUNCIONES
-    <declaracion_funcion> ::= "function" <identificador> "(" <parametros_funcion> ")" "{" <lista_sentencias> "}"
-
-    <parametros_funcion> ::= <declaracion_parametros> | E    
-
-    <declaracion_parametros> ::= <tipo> <id> <cola_parametros>
-
-    <cola_parametros> ::= "," <declaracion_parametros>
-        |   E
-
-    <llamada_funcion> ::= <identificador> "(" <lista_parametros> ")"
-
-    <lista_parametros> ::= <expresion> <lista_parametros_cola>
-    	|	E
-
-    <lista_parametros_cola> ::= ","<lista_parametros> | E
-
-#VALORES 
-	<valor> := <NU> | <ST> | <BOOL>
-
-    <NU> ::= [ 0-9 ]+[.(0-9)+]?
-
-    <ST> ::= "\"" [A-Z|a-z|0-9|SY|OP]* "\""
-
-    <BOOL> ::= true | false
-
-#####################NOTAS###############
-	<programa> ::= <proposicion_compuesta>
-
-	<proposicion_compuesta> ::= begin <proposiciones_optativas> end
-
-	<proposiciones_optativas> ::= <lista_proposiciones> | E
-
-	<lista_proposiciones> ::= <proposicion> | <lista_proposiciones> ; <proposicion>
-
-	<proposicion> ::= <asignacion>
-		|	<decision>
-		|	<ciclo>
-
-	#Eliminacion de recursividad
-	<lista_proposiciones> ::= <proposicion> <lista_proposiciones1>
-	<lista_proposiciones1> ::= ; <proposicion> <lista_proposiciones1>
-		A-> (alpha) B (beta)
+FUNCTION_CALL -> _ id ( PARAM_LIST )
+PARAM_LIST -> ASSIGNMENT_EXPR PARAM_LIST'
+PARAM_LIST' -> , ASSIGNMENT_EXPR PARAM_LIST' | E
