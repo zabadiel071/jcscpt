@@ -28,16 +28,22 @@
   },
   {"noTerminal":"DECLARATION",
     "productions":[
-      {"terminals" : ["int"], "symbols": ["int", "ASSIGNMENT", "DECLARATION'"]},
-      {"terminals" : ["float"], "symbols": ["float", "ASSIGNMENT", "DECLARATION'"]},
-      {"terminals" : ["boolean"], "symbols": ["boolean", "ASSIGNMENT", "DECLARATION'"]},
-      {"terminals" : ["string"], "symbols": ["string", "ASSIGNMENT", "DECLARATION'"]}
+      {"terminals" : ["int"], "symbols": ["int", "id", "RIGHT_DECLARATION", "DECLARATION'"]},
+      {"terminals" : ["float"], "symbols": ["float","id", "RIGHT_DECLARATION", "DECLARATION'"]},
+      {"terminals" : ["boolean"], "symbols": ["boolean","id", "RIGHT_DECLARATION", "DECLARATION'"]},
+      {"terminals" : ["string"], "symbols": ["string","id", "RIGHT_DECLARATION", "DECLARATION'"]}
     ]
   },
   {"noTerminal":"DECLARATION'",
     "productions":[
-      {"terminals" : [","], "symbols": [",","ASSIGNMENT","DECLARATION'"]},
+      {"terminals" : [","], "symbols": [",","id","RIGHT_DECLARATION","DECLARATION'"]},
       {"terminals" : ["}", "function", "++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if", "$"], "symbols": [""]}
+    ]
+  },
+  {"noTerminal":"RIGHT_DECLARATION",
+    "productions":[
+      {"terminals": ["="] , "symbols": ["=", "ASSIGNMENT_EXPR"]},
+      {"terminals":[",", "}", "function", "++", "--", "id", "while", "return", "_", "int", "float", "boolean", "string", "for", "if", "$"], "symbols": [""]}
     ]
   },
   {"noTerminal":"LOOP",
@@ -148,7 +154,7 @@
   },
   {"noTerminal":"FUNCTION_PARAMS",
     "productions":[
-      {"terminals" : ["int, float, boolean, string"], "symbols": ["DECLARE_PARAMS"]},
+      {"terminals" : ["int", "float", "boolean", "string"], "symbols": ["DECLARE_PARAMS"]},
       {"terminals" : [")"], "symbols": [""]}
     ]
   },
