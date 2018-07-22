@@ -6,9 +6,11 @@ import javafx.stage.Modality
 import javafx.stage.StageStyle
 import lexer.Lexer
 import lexer.symbolTable.Token
+import parser.Parser
 import tornadofx.*
 import troubleshoot.Error
 import kotlin.collections.ArrayList
+import lexer.SyntaxElements
 
 class MainScreen : View("Analizador de 3 fases") {
 
@@ -19,11 +21,17 @@ class MainScreen : View("Analizador de 3 fases") {
         this.prefWidth = 500.0
     }
 
+    val traceList = listview<String> {
+        selectionModel.selectionMode = SelectionMode.MULTIPLE
+        this.prefWidth = 500.0
+    }
+
     val fileText = textarea {
 
     }
 
     var lexer : Lexer? = null
+    var parser : Parser? = null
 
    override val root = vbox {
        addClass(Styles.wrapper)
@@ -32,10 +40,16 @@ class MainScreen : View("Analizador de 3 fases") {
             addClass(Styles.container)
             button("Analisis"){
                 action {
-                    lexer = Lexer(fileText.text)
-                    lexer!!.read()
+
                     tokenlist.clear()
                     errorList.items.clear()
+                    traceList.items.clear()
+                    SyntaxElements.tokenList.clear()
+
+
+                    lexer = Lexer(fileText.text)
+                    lexer!!.read()
+
                     runAsync {
                         lexer!!.hashTable.getHashTable()
                     } ui { observableList: ObservableList<Token> ->
@@ -44,6 +58,13 @@ class MainScreen : View("Analizador de 3 fases") {
                             lexer!!.errorList.forEach { error: Error -> errorList.items.add(error) }
                         }else{
                             //Start syntax analysis
+                            parser = Parser(SyntaxElements.tokenList)
+                            parser!!.syntaxAnalysis()
+                            runAsync {
+                                parser!!.getTrace()
+                            }ui { observableList ->
+                                observableList.forEach { s -> traceList.items.add(s) }
+                            }
                         }
                     }
                 }
@@ -77,9 +98,7 @@ class MainScreen : View("Analizador de 3 fases") {
             vbox{
                 addClass(Styles.container)
                 label("Traza de analisis sintáctico")
-                tableview<String>{
-                    prefWidth = 600.0
-                }
+                add(traceList)
             }
 
             vbox{

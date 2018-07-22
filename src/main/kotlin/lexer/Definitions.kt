@@ -1,5 +1,7 @@
 package lexer
 
+import java.util.*
+
 class Definitions{
     companion object {
 
@@ -11,17 +13,17 @@ class Definitions{
         val types = listOf<String>("int","float", "boolean" , "string")
 
         val operators = listOf<String>(
-                "=", "+", "-", "*","/", "%","==","!=","!"
+                "=","&&","||",">=","==","!=","<=",">","<","+","-","*","/"
         )
 
         val dictionary = listOf<String>(
-                "!","¡","=", "+", "-", "*","/", "%","_",
-                "==","!=", "(", ")", "{", "}","[","]",
-                ":", ",", ".","\\"," ", "\"", "\n", "\t" , "'", "`" , "#"
+                "=","&&","||",">=","==","!=","<=",">","<","+","-","*","/",
+                "_", "(", ")", "{", "}","[","]",
+                ",", "\\"," ", "\"", "\n", "\t" , "'", "`" , "#"
         )
 
         val delimiters= listOf<Char>(
-                ' ',',','\n','\t',';', '(', ')', '{', '}','!'
+                ' ',',','\n','\t',';', '(', ')', '{', '}','!', '\r' , '_'
         )
 
         val scopeInitToken = listOf<String>(
@@ -57,7 +59,11 @@ class Types{
     companion object {
         const val INTEGER = "int"
         const val FLOAT = "float"
-        const val BOOLEAN = "bool"
+        const val BOOLEAN = "boolean"
         const val STRING = "string"
     }
+}
+
+object SyntaxElements {
+    val tokenList: Queue<String> = LinkedList<String>()
 }

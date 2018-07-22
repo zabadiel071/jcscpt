@@ -1,7 +1,10 @@
 package parser
 
+import javafx.collections.ObservableList
+import tornadofx.observable
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Parser(val tokenList:Queue<String>) {
 
@@ -112,7 +115,15 @@ class Parser(val tokenList:Queue<String>) {
         return AnalysisTable.terminals.contains(s)
     }
 
+    fun getTrace() : ObservableList<String>{
+        val list = ArrayList<String>()
 
+        trace.forEach { s: String? ->
+            list.add(s!!)
+        }
+
+        return list.observable()
+    }
 }
 
 fun main(args: Array<String>) {

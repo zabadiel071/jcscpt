@@ -56,13 +56,16 @@ class Lexer (val code: String) {
                     ' ','\t' -> {
                         column++; read()
                     }                     //Just to verify tabs, row breaks and spaces
-                    '\n' -> {
+                    '\n','\r' -> {
                         row++
                         column = 0
                         read()
                     }
                     '/' -> {
-                        commentCheck()
+                        if (code[pointer + 1] == '/')
+                            commentCheck()
+                        else
+                            symbolCheck()
                     }
                     else ->{
                         symbolCheck()                       //Check if is a valid symbol
@@ -70,6 +73,7 @@ class Lexer (val code: String) {
                 }
             }
         }catch (e:IndexOutOfBoundsException){
+            SyntaxElements.tokenList.add("$")
         }
     }
 
@@ -89,6 +93,7 @@ class Lexer (val code: String) {
             if (isReserved(auxToken)){
                 typeStack.push(auxToken)
                 hashTable.push(Token(auxToken,category = Categories.RESERVED_WORD))
+                SyntaxElements.tokenList.add(auxToken)
             }else{
                 if(isValidIdentifier(auxToken)){
                     if (!typeStack.empty() && types.contains(typeStack.peek()))
@@ -133,6 +138,7 @@ class Lexer (val code: String) {
                     generateError(ErrorCodes.NUMBER_FORMAT_ERROR, auxToken, row)
                 }
             }
+            SyntaxElements.tokenList.add("value")
         }
         column += auxToken.length
         pointer--
@@ -167,6 +173,7 @@ class Lexer (val code: String) {
                     hashTable.push(
                             Token(auxToken, Types.STRING, lengths[Types.STRING]!!,row,column,scope = scope,category = Categories.STRING)
                     )
+                    SyntaxElements.tokenList.add("value")
                 }
                 else -> generateError(ErrorCodes.INVALID_STRING,auxToken, row)
             }
@@ -180,28 +187,25 @@ class Lexer (val code: String) {
      *
      */
     private fun symbolCheck() {
+
         auxToken += code[pointer]
-        //Operators like ==, !=
-        if (pointer < code.length && (auxToken=="=" || auxToken=="!")){
-            val x = code[pointer + 1]
-            when (x){
-                '=' -> {
-                    pointer++;
-                    auxToken += code[pointer]
+        if(pointer < code.length){
+            when{
+                isDelimiter(auxToken[0]) -> pushDelimiter(auxToken[0])
+                else ->{
+                    val x = auxToken + code[pointer + 1]
+                    when{
+                        isOperator(x) -> { pushOperator(x) ; pointer++ }
+                        isOperator(auxToken) -> pushOperator(auxToken)
+                        else -> {
+                            generateError(ErrorCodes.UNKNOWN_SYMBOL, auxToken, row)
+                        }
+                    }
                 }
             }
         }
-
-        when (checkCharacters(auxToken)){
-            true ->when{
-                        isOperator(auxToken) -> pushOperator(auxToken)
-                        isDelimiter(auxToken[0]) -> pushDelimiter(auxToken[0])
-                        else -> pushSymbol(auxToken)
-                    }
-            false -> generateError(ErrorCodes.UNKNOWN_SYMBOL, auxToken, row)
-        }
         column += auxToken.length
-        this.read()
+        read()
     }
 
     /**
@@ -242,6 +246,7 @@ class Lexer (val code: String) {
         }else{
             this.hashTable.push(Token(token,type, row = row,column = column,scope = scope,category = Categories.IDENTIFIER))
         }
+        SyntaxElements.tokenList.add("id")
     }
 
     /**
@@ -251,10 +256,12 @@ class Lexer (val code: String) {
         if (token != ""){
             this.hashTable.push(Token(token, row = row,category = Categories.OPERATOR))
         }
+        SyntaxElements.tokenList.add(token)
     }
 
     private fun pushDelimiter(c: Char) {
         this.hashTable.push(Token("$c",row = row,column = column,scope = scope,category = Categories.DELIMITER))
+        SyntaxElements.tokenList.add("$c")
     }
 
     /**
@@ -263,6 +270,7 @@ class Lexer (val code: String) {
     private fun pushSymbol(token: String) {
         if (token != ""){
             this.hashTable.push(Token(token,"", 0,row, column,"",category = Categories.SYMBOL ))
+            SyntaxElements.tokenList.add(token)
         }
         if (isScopeInit(token)){
             scope++
