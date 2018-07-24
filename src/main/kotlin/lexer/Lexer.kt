@@ -93,7 +93,11 @@ class Lexer (val code: String) {
             if (isReserved(auxToken)){
                 typeStack.push(auxToken)
                 hashTable.push(Token(auxToken,category = Categories.RESERVED_WORD))
-                SyntaxElements.tokenList.add(auxToken)
+                if(isBoolean(auxToken)){
+                    hashTable.push(Token(auxToken,category = Categories.BOOL))
+                    SyntaxElements.tokenList.add("value")
+                }else
+                    SyntaxElements.tokenList.add(auxToken)
             }else{
                 if(isValidIdentifier(auxToken)){
                     if (!typeStack.empty() && types.contains(typeStack.peek()))
@@ -112,6 +116,10 @@ class Lexer (val code: String) {
             pointer --
             this.read()
         }
+    }
+
+    private fun isBoolean(auxToken: String): Boolean {
+        return auxToken.equals("true") || auxToken.equals("false")
     }
 
     /**

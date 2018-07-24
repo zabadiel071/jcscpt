@@ -7,13 +7,14 @@ class Definitions{
 
         val reservedWords = listOf<String>(
                 "int","float","string","return","function",
-                "if","else","return","for","while", "true", "false", "const"
+                "if","else","return","for","while", "true", "false", "const",
+                "boolean"
         )
 
         val types = listOf<String>("int","float", "boolean" , "string")
 
         val operators = listOf<String>(
-                "=","&&","||",">=","==","!=","<=",">","<","+","-","*","/"
+                "=","&&","||",">=","==","!=","<=",">","<","+","-","*","/" , "++", "--"
         )
 
         val dictionary = listOf<String>(
@@ -38,7 +39,8 @@ class Definitions{
                 Pair("int",4),
                 Pair("double",8),
                 Pair("float",4),
-                Pair("string",0)
+                Pair("string",0),
+                Pair("boolean", 1)
         )
     }
 }
@@ -52,6 +54,7 @@ class Categories{
         const val NUMERIC = "NU"
         const val STRING = "ST"
         const val DELIMITER = "DEL"
+        const val BOOL = "BOOL"
     }
 }
 
